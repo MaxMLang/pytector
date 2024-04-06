@@ -21,7 +21,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
     - name: Install the package
-      run: pip install pytector
+      run: pip install .
     - name: Run tests
       run: python -m unittest discover -s tests
     - name: Run tests
