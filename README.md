@@ -1,6 +1,3 @@
-Certainly! Here's a template for a README file for your `pytector` package. You can save this as `README.md` in your project directory.
-
-```markdown
 # Pytector
 
 Pytector is a Python package designed to detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library.
