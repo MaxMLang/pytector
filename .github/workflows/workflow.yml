@@ -22,7 +22,7 @@ jobs:
         pip install setuptools wheel twine
     - name: Run tests
       run: |
-        # Run your project's tests here
+        python -m unittest discover -s tests
     - name: Build package
       run: python setup.py sdist bdist_wheel
     - name: Publish package
