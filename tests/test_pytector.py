@@ -1,6 +1,5 @@
 import unittest
-from pytector.detector import PromptInjectionDetector  # Corrected import
-
+import pytector
 class TestPromptInjectionDetector(unittest.TestCase):
 
     def test_initialization_with_predefined_model(self):
