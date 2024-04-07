@@ -1,6 +1,8 @@
 import unittest
 import validators
+import transformers
 from src import pytector
+
 class TestPromptInjectionDetector(unittest.TestCase):
 
     def test_initialization_with_predefined_model(self):
