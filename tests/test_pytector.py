@@ -1,6 +1,6 @@
 import unittest
 from src import pytector
-
+import validators
 
 class TestPromptInjectionDetector(unittest.TestCase):
 
