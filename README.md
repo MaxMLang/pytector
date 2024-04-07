@@ -14,6 +14,10 @@ Pytector is still a prototype and cannot provide 100% protection against prompt 
 - Easy-to-use interface with customizable threshold settings.
 
 ## Installation
+Via PIP
+```bash
+pip install pytector
+```
 
 Install Pytector directly from the source code:
 
@@ -22,6 +26,8 @@ git clone https://github.com/MaxMLang/pytector.git
 cd pytector
 pip install .
 ```
+
+
 
 ## Usage
 
