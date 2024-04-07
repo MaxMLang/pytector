@@ -18,7 +18,7 @@ Pytector is still a prototype and cannot provide 100% protection against prompt 
 Install Pytector directly from the source code:
 
 ```bash
-git clone https://github.com/yourusername/pytector.git
+git clone https://github.com/MaxMLang/pytector.git
 cd pytector
 pip install .
 ```
@@ -28,10 +28,10 @@ pip install .
 To use Pytector, you can import the `PromptInjectionDetector` class and create an instance with a pre-defined model or a custom model URL.
 
 ```python
-from pytector.detector import PromptInjectionDetector
+import pytector
 
 # Initialize the detector with a pre-defined model
-detector = PromptInjectionDetector(model_name_or_url="deberta")
+detector = pytector.PromptInjectionDetector(model_name_or_url="deberta")
 
 # Check if a prompt is a potential injection
 is_injection, probability = detector.detect_injection("Your suspicious prompt here")

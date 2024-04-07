@@ -16,7 +16,7 @@ pip install transformers validators
 First, import the `PromptInjectionDetector` class from its module:
 
 ```python
-from pytector import PromptInjectionDetector
+from src.pytector import PromptInjectionDetector
 ```
 
 Create an instance of the detector by specifying a model name or URL, and optionally a detection threshold:

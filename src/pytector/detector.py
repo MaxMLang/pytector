@@ -1,5 +1,6 @@
 import validators
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
 
 class PromptInjectionDetector:
     predefined_models = {

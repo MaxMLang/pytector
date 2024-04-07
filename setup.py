@@ -2,14 +2,15 @@ from setuptools import setup, find_packages
 
 setup(
     name='pytector',
-    version='0.0.4',
+    version='0.0.5',
     author='Max Melchior Lang',
     author_email='langmaxmelchior@gmail.com',
     description='A package for detecting prompt injections in text using Open-Source LLMs.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/MaxMLang/pytector',
-    packages=find_packages(),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
     install_requires=[
         'transformers>=4.0.0',
         'validators',
