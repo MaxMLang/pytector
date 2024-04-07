@@ -1,6 +1,6 @@
 # Pytector
 ![Build](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/test.yml?branch=main)
-![Tests](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/tests.yml?branch=main)
+![Tests](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/tests.yml?branch=main?label=tests)
 ![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![License](https://img.shields.io/github/license/MaxMLang/pytector)
 ![Issues](https://img.shields.io/github/issues/MaxMLang/pytector)
