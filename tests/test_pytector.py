@@ -1,5 +1,5 @@
 import unittest
-from src import pytector
+from pytector import PromptInjectionDetector
 
 class TestPromptInjectionDetector(unittest.TestCase):
 
