@@ -1,5 +1,10 @@
 # Pytector
 
+![Workflow Status](https://img.shields.io/github/workflow/status/MaxMLang/pytector/CI)
+![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
+![License](https://img.shields.io/github/license/MaxMLang/pytector)
+![Issues](https://img.shields.io/github/issues/MaxMLang/pytector)
+![Pull Requests](https://img.shields.io/github/issues-pr/MaxMLang/pytector)
 Pytector is a Python package designed to detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library.
 
 ## Disclaimer
