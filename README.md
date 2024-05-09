@@ -1,4 +1,5 @@
 # Pytector
+*As presented at the Oxford Workshop on Safety of AI Systems*
 <p align="center">
   <img src="https://github.com/MaxMLang/assets/blob/main/pytector-logo.png?raw=true" width="200" height="200" alt="Pytector Logo">
 </p>
