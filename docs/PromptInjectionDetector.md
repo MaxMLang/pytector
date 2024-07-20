@@ -46,6 +46,12 @@ detector.report_injection_status(prompt="Example prompt")
 Initializes a new instance of the `PromptInjectionDetector`.
 
 - `model_name_or_url`: A string that specifies the model to use. It can be either a key from the predefined models or a valid URL to a custom model.
+``` 
+  "deberta": "protectai/deberta-v3-base-prompt-injection"
+  "distilbert": "fmops/distilbert-prompt-injection"
+  "distilbert-onxx": "prompt-security/fmops-distilbert-prompt-injection-onnx"
+```
+
 - `default_threshold`: A float representing the probability threshold above which a prompt is considered as containing an injection.
 
 ### `detect_injection(self, prompt, threshold=None)`
