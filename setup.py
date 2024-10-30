@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pytector',
-    version='0.0.10',
+    version='0.0.11',
     author='Max Melchior Lang',
     author_email='langmaxmelchior@gmail.com',
     description='A package for detecting prompt injections in text using Open-Source LLMs.',
