@@ -10,10 +10,10 @@
 ![Issues](https://img.shields.io/github/issues/MaxMLang/pytector)
 ![Pull Requests](https://img.shields.io/github/issues-pr/MaxMLang/pytector)
 
-**Pytector** is a Python package designed to detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. Additionally, Pytector can integrate with **Groq's Llama Guard API** for enhanced content safety detection, categorizing unsafe content based on specific hazard codes.
+**Pytector** is a Python package designed to detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. Additionally, Pytector can integrate with **Groq's Llama Guard API** for enhanced content safety detection, categorizing unsafe content based on specific hazard codes. Pytector prioritises ease of use over bullet proof prompt injection. The primary goal was to create an easy-to-use framework that could be used by developers to launch web applications for demos and small-scale deployments while yet ensuring minimaml prompt injection protection. For reliable and self-hardening prompt injection [rebuff](https://github.com/protectai/rebuff) seems like a promising alternative.
 
 ## Disclaimer
-Pytector is still a prototype and cannot provide 100% protection against prompt injection attacks!
+ Pytector is still a prototype and cannot provide 100% protection against prompt injection attacks! 
 
 ---
 
