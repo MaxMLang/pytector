@@ -10,7 +10,7 @@
 ![Issues](https://img.shields.io/github/issues/MaxMLang/pytector)
 ![Pull Requests](https://img.shields.io/github/issues-pr/MaxMLang/pytector)
 
-**Pytector** is a Python package designed to detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. Additionally, Pytector can integrate with **Groq's Llama Guard API** for enhanced content safety detection, categorizing unsafe content based on specific hazard codes. Pytector prioritises ease of use over bullet proof prompt injection. The primary goal was to create an easy-to-use framework that could be used by developers to launch web applications for demos and small-scale deployments while yet ensuring minimaml prompt injection protection. For reliable and self-hardening prompt injection [rebuff](https://github.com/protectai/rebuff) seems like a promising alternative.
+**Pytector** is a Python package designed to detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. Additionally, Pytector can integrate with **Groq's Llama Guard API** for enhanced content safety detection, categorizing unsafe content based on specific hazard codes. Pytector prioritises ease of use over bullet proof prompt injection. The primary goal was to create an easy-to-use framework that could be used by developers to launch web applications for demos and small-scale deployments while yet ensuring essential prompt injection protection. For reliable and self-hardening prompt injection [rebuff](https://github.com/protectai/rebuff) seems like a promising alternative.
 
 ## Disclaimer
  Pytector is still a prototype and cannot provide 100% protection against prompt injection attacks! 
@@ -108,7 +108,7 @@ print(f"Is unsafe: {is_unsafe}, Hazard Code: {hazard_code}")
 
 ## Methods
 
-### `__init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None)`
+**`__init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None)`**
 
 Initializes a new instance of the `PromptInjectionDetector`.
 
@@ -117,20 +117,20 @@ Initializes a new instance of the `PromptInjectionDetector`.
 - `use_groq`: Set to `True` to enable Groq's Llama Guard API for detection.
 - `api_key`: Required if `use_groq=True` to authenticate with Groq's API.
 
-### `detect_injection(self, prompt, threshold=None)`
+ `detect_injection(self, prompt, threshold=None)`
 
 Evaluates whether a text prompt is a prompt injection attack using a local model.
 
 - Returns `(is_injected, probability)`.
 
-### `detect_injection_api(self, prompt, provider="groq", api_key=None, model="llama-guard-3-8b")`
+**`detect_injection_api(self, prompt, provider="groq", api_key=None, model="llama-guard-3-8b")`**
 
 Uses Groq's API to evaluate a prompt for unsafe content.
 
 - Returns `(is_unsafe, hazard_code)`.
 
-### `report_injection_status(self, prompt, threshold=None, provider="local")`
-
+**`report_injection_status(self, prompt, threshold=None, provider="local")`
+**
 Reports whether a prompt is a potential injection or contains unsafe content.
 
 ---
