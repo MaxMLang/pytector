@@ -15,6 +15,9 @@
 ## Disclaimer
  Pytector is still a prototype and cannot provide 100% protection against prompt injection attacks! 
 
+## Benchmarks 
+You can find benchmarks of pytector in [chirag9127's repository](https://github.com/chirag9127/prompt_injection_benchmarks). Thank you for your efforts. 
+
 ---
 
 ## Features
