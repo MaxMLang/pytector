@@ -4,7 +4,7 @@
   <img src="https://github.com/MaxMLang/assets/blob/main/pytector-logo.png?raw=true" width="200" height="200" alt="Pytector Logo">
 </p>
 
-![PyPI Downloads]([https://img.shields.io/pypi/dt/pytector](https://img.shields.io/pypi/dm/pytector)
+![PyPI Downloads]([https://img.shields.io/pypi/dt/pytector](https://img.shields.io/pypi/dm/pytector))
 ![Build](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/workflow.yml?branch=main)
 ![Tests](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/tests.yml?branch=main&label=tests)
 ![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
