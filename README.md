@@ -5,6 +5,7 @@
 </p>
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/pytector)
+[![PyPI Downloads](https://static.pepy.tech/badge/pytector)](https://pepy.tech/projects/pytector)
 ![Build](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/workflow.yml?branch=main)
 ![Tests](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/tests.yml?branch=main&label=tests)
 ![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
