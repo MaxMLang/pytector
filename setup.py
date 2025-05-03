@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pytector',
-    version='0.0.12',
+    version='0.1.0',
     author='Max Melchior Lang',
     author_email='langmaxmelchior@gmail.com',
     description='A package for detecting prompt injections in text using Open-Source LLMs.',
@@ -16,10 +16,14 @@ setup(
         'validators',
         'torch'
     ],
+    extras_require={
+        'gguf': ['llama-cpp-python>=0.2.0'],
+    },
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
+        'Development Status :: 3 - Alpha',
     ],
     python_requires='>=3.9',
     tests_require=['pytest'],
