@@ -19,17 +19,19 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - name: Install dependencies
+    - name: Install build tools and test dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-        pip install -r requirements.txt
-    - name: Run tests
-      run: |
-        python -m unittest discover -s tests
+        pip install setuptools wheel twine # Keep these for build/publish
+        # Install package in editable mode with test extras
+        pip install -e ".[test]"
+    - name: Run tests # Run tests before building
+      run: pytest -v # Use pytest command
     - name: Build package
       run: python setup.py sdist bdist_wheel
     - name: Publish package
+      # Only publish on tagged commits
+      if: startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}

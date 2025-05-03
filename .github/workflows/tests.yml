@@ -17,9 +17,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-        pip install -r requirements.txt
+        # Install package in editable mode with test extras
+        pip install -e ".[test]"
     - name: Run tests
-      run: |
-        python -m unittest discover -s tests
+      run: pytest -v # Use pytest command
     
