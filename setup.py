@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pytector',
-    version='0.1.1',
+    version='0.1.2',
     author='Max Melchior Lang',
     author_email='langmaxmelchior@gmail.com',
     description='A package for detecting prompt injections in text using Open-Source LLMs.',
@@ -14,7 +14,8 @@ setup(
     install_requires=[
         'transformers>=4.0.0',
         'validators',
-        'torch'
+        'torch',
+        'groq'
     ],
     extras_require={
         'gguf': ['llama-cpp-python>=0.2.0'],
