@@ -154,7 +154,7 @@ except Exception as e:
 
 ## Methods
 
-### `__init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="llama-guard-3-8b")`
+### `__init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="meta-llama/llama-guard-4-12b")`
 
 Initializes a new instance of the `PromptInjectionDetector`.
 
@@ -162,7 +162,7 @@ Initializes a new instance of the `PromptInjectionDetector`.
 - `default_threshold`: Probability threshold for Hugging Face models.
 - `use_groq`: Set to `True` to enable Groq's API.
 - `api_key`: Required if `use_groq=True`.
-- `groq_model`: The specific model to use with the Groq API (default: `llama-guard-3-8b`).
+- `groq_model`: The specific model to use with the Groq API (default: `meta-llama/llama-guard-4-12b`).
 
 ### `detect_injection(self, prompt, threshold=None)`
 

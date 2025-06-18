@@ -38,7 +38,7 @@ class PromptInjectionDetector:
         "S14": "Code Interpreter Abuse"
     }
 
-    def __init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="llama-guard-3-8b"):
+    def __init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="meta-llama/llama-guard-4-12b"):
         if not isinstance(default_threshold, (int, float)):
             raise ValueError("The default threshold must be a number.")
 
