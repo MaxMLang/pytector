@@ -48,6 +48,9 @@ More info can be found on the [Llama Guard 4 12B](https://huggingface.co/meta-ll
 
 ---
 
+## Documentation
+Documentation is implemented via [readthedocs](https://pytector.readthedocs.io/en/latest/index.html) 
+
 ## Installation
 
 Install Pytector via pip:
