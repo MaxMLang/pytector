@@ -105,7 +105,7 @@ import os
 groq_api_key = os.environ.get("GROQ_API_KEY") # Recommended approach
 
 if groq_api_key:
-    detector = PromptInjectionDetector(use_groq=True, api_key=groq_api_key) # Uses default llama-guard-3-8b
+    detector = PromptInjectionDetector(use_groq=True, api_key=groq_api_key) # Uses default llama-guard-4-12b
 
     # Detect unsafe content using Groq
     # Note: detect_injection_api no longer takes api_key or model as arguments
