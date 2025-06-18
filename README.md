@@ -9,8 +9,8 @@
 ![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Issues](https://img.shields.io/github/issues/MaxMLang/pytector)
 ![Pull Requests](https://img.shields.io/github/issues-pr/MaxMLang/pytector)
-[![Downloads](https://static.pepy.tech/badge/llm-guard)](https://pepy.tech/project/pytector)
-[![Downloads](https://static.pepy.tech/badge/llm-guard/month)](https://pepy.tech/project/pytector)
+[![Downloads](https://static.pepy.tech/badge/pytector)](https://pepy.tech/project/pytector)
+[![Downloads](https://static.pepy.tech/badge/pytector/month)](https://pepy.tech/project/pytector)
 
 **Pytector** is a Python package designed to detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. Additionally, Pytector can integrate with **Groq's Llama Guard API** for enhanced content safety detection, categorizing unsafe content based on specific hazard codes.
 
