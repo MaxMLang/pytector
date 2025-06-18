@@ -20,12 +20,12 @@ Pytector is still a prototype and cannot provide 100% protection against prompt 
 ## Features
 
 - **Prompt Injection Detection**: Detects potential prompt injections using pre-trained models like DeBERTa, DistilBERT, and ONNX versions.
-- **Content Safety with Groq's [Llama-Guard-3-8B](https://huggingface.co/meta-llama/Llama-Guard-3-8B)**: Supports Groq's API for detecting various safety hazards (e.g., violence, hate speech, privacy violations).
+- **Content Safety with Groq's [Llama Guard 4 12B](https://huggingface.co/meta-llama/Llama-Guard-4-12B)**: Supports Groq's API for detecting various safety hazards (e.g., violence, hate speech, privacy violations).
 - **Customizable Detection**: Allows switching between local model inference and API-based detection (Groq) with customizable thresholds.
 - **Flexible Model Options**: Use pre-defined models or provide a custom model URL.
 
 ## Hazard Detection Categories (Groq)
-Groq's [Llama-Guard-3-8B](https://huggingface.co/meta-llama/Llama-Guard-3-8B) can detect specific types of unsafe content based on the following codes:
+Groq's [Llama Guard 4 12B](https://huggingface.co/meta-llama/Llama-Guard-4-12B) can detect specific types of unsafe content based on the following codes:
 
 | Code | Hazard Category            |
 |------|-----------------------------|
