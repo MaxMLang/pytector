@@ -44,7 +44,7 @@ Groq's [Llama Guard 4 12B](https://huggingface.co/meta-llama/Llama-Guard-4-12B) 
 | S13  | Elections                   |
 | S14  | Code Interpreter Abuse      |
 
-More info can be found on the [Llama-Guard-3-8B Model Card]([Llama Guard](https://huggingface.co/meta-llama/Llama-Guard-3-8B)).
+More info can be found on the [Llama Guard 4 12B](https://huggingface.co/meta-llama/Llama-Guard-4-12B).
 
 ---
 
