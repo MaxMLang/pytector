@@ -216,7 +216,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-For more detailed information, refer to the [docs](docs) directory.
+For more detailed information, refer to the [readthedocs](https://pytector.readthedocs.io/en/latest/index.html) site.
 
 ---
 
