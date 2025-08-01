@@ -473,7 +473,7 @@ Please read our [Contributing Guide](contributing.md) for details on our code of
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 License since v0.2.0 and previously was licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
