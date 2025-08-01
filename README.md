@@ -1,5 +1,4 @@
 # Pytector
-*As presented at the Oxford Workshop on Safety of AI Systems including Demo Sessions and Tutorials*
 <p align="center">
   <img src="https://github.com/MaxMLang/assets/blob/main/pytector-logo.png?raw=true" width="200" height="200" alt="Pytector Logo">
 </p>
@@ -9,6 +8,8 @@
 ![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Issues](https://img.shields.io/github/issues/MaxMLang/pytector)
 ![Pull Requests](https://img.shields.io/github/issues-pr/MaxMLang/pytector)
+[![Downloads](https://static.pepy.tech/badge/pytector)](https://pepy.tech/project/pytector)
+[![Downloads](https://static.pepy.tech/badge/pytector/month)](https://pepy.tech/project/pytector)
 
 **Pytector** is a Python package that helps you detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. It can also integrate with **Groq's Llama Guard API** for enhanced content safety detection, categorizing unsafe content based on specific hazard codes.
 
@@ -103,6 +104,9 @@ Pytector works best in scenarios where you need immediate security controls beyo
 **Important**: This tool provides a basic security layer only. Always implement additional security measures appropriate for your specific use case and risk profile.
 
 ---
+
+## Documentation
+Documentation is implemented via [readthedocs](https://pytector.readthedocs.io/en/latest/index.html)
 
 ## Installation
 
@@ -473,7 +477,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-For more detailed information, refer to the [docs](docs) directory.
+For more detailed information, refer to the [readthedocs](https://pytector.readthedocs.io/en/latest/index.html) site.
 
 ---
 
