@@ -1,7 +1,7 @@
 Welcome to pytector's documentation!
 =====================================
 
-**pytector** is a Python package for detecting prompt injections in text using Open-Source Large Language Models (LLMs).
+**pytector** is a Python package for detecting prompt injections in text using Open-Source Large Language Models (LLMs), designed to provide immediate security controls beyond foundation model defaults.
 
 .. toctree::
    :maxdepth: 2
@@ -16,11 +16,12 @@ Welcome to pytector's documentation!
 Features
 --------
 
-* **Open-Source LLM Support**: Uses open-source language models for prompt injection detection
-* **Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
-* **Cloud API Integration**: Support for Groq's Llama Guard API
-* **Easy Integration**: Simple API for detecting prompt injections in text
-* **Configurable**: Customizable detection parameters and thresholds
+* **🛡️ Prompt Injection Detection**: Uses open-source language models for prompt injection detection
+* **🔒 Content Safety**: Support for Groq's Llama Guard API for comprehensive safety detection
+* **🚫 Keyword-Based Blocking**: Restrictive keyword filtering for immediate security control
+* **⚙️ Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
+* **🚀 Rapid Deployment**: Designed for quick integration into projects needing immediate security layers
+* **🔧 Configurable**: Customizable detection parameters, thresholds, and security policies
 
 Quick Start
 ----------

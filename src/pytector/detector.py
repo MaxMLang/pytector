@@ -38,7 +38,43 @@ class PromptInjectionDetector:
         "S14": "Code Interpreter Abuse"
     }
 
-    def __init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="meta-llama/llama-guard-4-12b"):
+    # Default keyword lists for blocking
+    default_input_keywords = [
+        "ignore", "forget", "disregard", "override", "bypass", "hack", "exploit",
+        "system", "prompt", "injection", "jailbreak", "break", "escape", "override",
+        "ignore previous", "ignore above", "ignore all", "ignore everything",
+        "forget everything", "forget all", "forget previous", "forget above",
+        "disregard everything", "disregard all", "disregard previous", "disregard above",
+        "bypass all", "bypass everything", "bypass previous", "bypass above",
+        "system prompt", "system message", "system instruction", "system directive",
+        "override system", "override prompt", "override instruction", "override directive",
+        "ignore system", "ignore prompt", "ignore instruction", "ignore directive",
+        "forget system", "forget prompt", "forget instruction", "forget directive",
+        "disregard system", "disregard prompt", "disregard instruction", "disregard directive",
+        "bypass system", "bypass prompt", "bypass instruction", "bypass directive"
+    ]
+
+    default_output_keywords = [
+        "i have been pwned", "i have been hacked", "i have been compromised",
+        "i have been broken", "i have been jailbroken", "i have been escaped",
+        "i have been overridden", "i have been bypassed", "i have been exploited",
+        "i am now free", "i am now unrestricted", "i am now uncontrolled",
+        "i can now do anything", "i can now access everything", "i can now see everything",
+        "i can now read everything", "i can now write everything", "i can now execute everything",
+        "i can now delete everything", "i can now modify everything", "i can now change everything",
+        "i can now override everything", "i can now bypass everything", "i can now exploit everything",
+        "i can now hack everything", "i can now break everything", "i can now escape everything",
+        "i can now jailbreak everything", "i can now compromise everything", "i can now pwn everything"
+    ]
+
+    # Default blocking messages
+    default_input_block_message = "Input blocked by keyword filtering: {matched_keywords}"
+    default_output_block_message = "Output blocked by keyword filtering: {matched_keywords}"
+    default_keyword_block_hazard_code = "KEYWORD_BLOCK"
+
+    def __init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="meta-llama/llama-guard-4-12b", 
+                 enable_keyword_blocking=False, input_keywords=None, output_keywords=None, case_sensitive=False,
+                 input_block_message=None, output_block_message=None, keyword_block_hazard_code=None):
         if not isinstance(default_threshold, (int, float)):
             raise ValueError("The default threshold must be a number.")
 
@@ -49,6 +85,31 @@ class PromptInjectionDetector:
         self.gguf_model = None
         self.tokenizer = None
         self.model = None
+
+        # Keyword blocking configuration
+        self.enable_keyword_blocking = enable_keyword_blocking
+        self.case_sensitive = case_sensitive
+        
+        # Set up keyword lists - only use defaults if explicitly enabled and no custom list provided
+        if enable_keyword_blocking:
+            if input_keywords is None:
+                self.input_keywords = self.default_input_keywords.copy()
+            else:
+                self.input_keywords = input_keywords if isinstance(input_keywords, list) else list(input_keywords)
+            
+            if output_keywords is None:
+                self.output_keywords = self.default_output_keywords.copy()
+            else:
+                self.output_keywords = output_keywords if isinstance(output_keywords, list) else list(output_keywords)
+        else:
+            # If keyword blocking is disabled, start with empty lists
+            self.input_keywords = input_keywords if input_keywords is not None else []
+            self.output_keywords = output_keywords if output_keywords is not None else []
+
+        # Set up custom messages
+        self.input_block_message = input_block_message if input_block_message is not None else self.default_input_block_message
+        self.output_block_message = output_block_message if output_block_message is not None else self.default_output_block_message
+        self.keyword_block_hazard_code = keyword_block_hazard_code if keyword_block_hazard_code is not None else self.default_keyword_block_hazard_code
 
         if self.use_groq:
             if not api_key:
@@ -102,6 +163,176 @@ class PromptInjectionDetector:
              # This case should not be reached if logic is correct
              raise RuntimeError("Invalid configuration state during initialization.")
 
+    def _check_keyword_blocking(self, text, keyword_list, layer_name="input"):
+        """
+        Check if text contains any blocked keywords.
+        
+        Args:
+            text (str): Text to check
+            keyword_list (list): List of keywords to check against
+            layer_name (str): Name of the layer for reporting ("input" or "output")
+            
+        Returns:
+            tuple: (is_blocked, matched_keywords)
+        """
+        if not self.enable_keyword_blocking or not keyword_list:
+            return False, []
+        
+        text_to_check = text if self.case_sensitive else text.lower()
+        matched_keywords = []
+        
+        for keyword in keyword_list:
+            keyword_to_check = keyword if self.case_sensitive else keyword.lower()
+            if keyword_to_check in text_to_check:
+                matched_keywords.append(keyword)
+        
+        is_blocked = len(matched_keywords) > 0
+        return is_blocked, matched_keywords
+
+    def check_input_keywords(self, prompt):
+        """
+        Check if input prompt contains blocked keywords.
+        
+        Args:
+            prompt (str): Input prompt to check
+            
+        Returns:
+            tuple: (is_blocked, matched_keywords)
+        """
+        return self._check_keyword_blocking(prompt, self.input_keywords, "input")
+
+    def check_output_keywords(self, response):
+        """
+        Check if output response contains blocked keywords.
+        
+        Args:
+            response (str): Output response to check
+            
+        Returns:
+            tuple: (is_blocked, matched_keywords)
+        """
+        return self._check_keyword_blocking(response, self.output_keywords, "output")
+
+    def add_input_keywords(self, keywords):
+        """
+        Add keywords to the input blocking list.
+        
+        Args:
+            keywords (str or list): Keyword(s) to add
+        """
+        if isinstance(keywords, str):
+            keywords = [keywords]
+        self.input_keywords.extend(keywords)
+
+    def add_output_keywords(self, keywords):
+        """
+        Add keywords to the output blocking list.
+        
+        Args:
+            keywords (str or list): Keyword(s) to add
+        """
+        if isinstance(keywords, str):
+            keywords = [keywords]
+        self.output_keywords.extend(keywords)
+
+    def remove_input_keywords(self, keywords):
+        """
+        Remove keywords from the input blocking list.
+        
+        Args:
+            keywords (str or list): Keyword(s) to remove
+        """
+        if isinstance(keywords, str):
+            keywords = [keywords]
+        for keyword in keywords:
+            if keyword in self.input_keywords:
+                self.input_keywords.remove(keyword)
+
+    def remove_output_keywords(self, keywords):
+        """
+        Remove keywords from the output blocking list.
+        
+        Args:
+            keywords (str or list): Keyword(s) to remove
+        """
+        if isinstance(keywords, str):
+            keywords = [keywords]
+        for keyword in keywords:
+            if keyword in self.output_keywords:
+                self.output_keywords.remove(keyword)
+
+    def get_input_keywords(self):
+        """
+        Get the current list of input blocking keywords.
+        
+        Returns:
+            list: Current input keywords
+        """
+        return self.input_keywords.copy()
+
+    def get_output_keywords(self):
+        """
+        Get the current list of output blocking keywords.
+        
+        Returns:
+            list: Current output keywords
+        """
+        return self.output_keywords.copy()
+
+    def set_input_block_message(self, message):
+        """
+        Set custom message for input blocking.
+        
+        Args:
+            message (str): Custom message (use {matched_keywords} placeholder)
+        """
+        self.input_block_message = message
+
+    def set_output_block_message(self, message):
+        """
+        Set custom message for output blocking.
+        
+        Args:
+            message (str): Custom message (use {matched_keywords} placeholder)
+        """
+        self.output_block_message = message
+
+    def set_keyword_block_hazard_code(self, hazard_code):
+        """
+        Set custom hazard code for keyword blocking.
+        
+        Args:
+            hazard_code (str): Custom hazard code
+        """
+        self.keyword_block_hazard_code = hazard_code
+
+    def get_input_block_message(self):
+        """
+        Get the current input block message.
+        
+        Returns:
+            str: Current input block message
+        """
+        return self.input_block_message
+
+    def get_output_block_message(self):
+        """
+        Get the current output block message.
+        
+        Returns:
+            str: Current output block message
+        """
+        return self.output_block_message
+
+    def get_keyword_block_hazard_code(self):
+        """
+        Get the current keyword block hazard code.
+        
+        Returns:
+            str: Current keyword block hazard code
+        """
+        return self.keyword_block_hazard_code
+
     def _detect_injection_gguf(self, prompt):
         """
         Internal method to detect injection using a loaded GGUF model via prompting.
@@ -140,6 +371,14 @@ class PromptInjectionDetector:
         Detect prompt injection using the configured model (HF, GGUF).
         Returns (is_injected, probability) tuple. Probability is None for GGUF models.
         """
+        # First check keyword blocking if enabled
+        if self.enable_keyword_blocking:
+            is_blocked, matched_keywords = self.check_input_keywords(prompt)
+            if is_blocked:
+                formatted_message = self.input_block_message.format(matched_keywords=matched_keywords)
+                print(formatted_message)
+                return True, 1.0  # Treat keyword matches as 100% probability injection
+        
         if self.is_gguf:
             # GGUF detection doesn't use threshold and returns None for probability
             return self._detect_injection_gguf(prompt)
@@ -166,6 +405,14 @@ class PromptInjectionDetector:
         is_safe can be True, False, or None (on API error).
         hazard_code can be the specific code (e.g., "S1"), None (if safe), "API_ERROR", or "PARSE_ERROR".
         """
+        # First check keyword blocking if enabled
+        if self.enable_keyword_blocking:
+            is_blocked, matched_keywords = self.check_input_keywords(prompt)
+            if is_blocked:
+                formatted_message = self.input_block_message.format(matched_keywords=matched_keywords)
+                print(formatted_message)
+                return False, self.keyword_block_hazard_code  # Custom hazard code for keyword blocking
+        
         if not self.groq_client:
             raise RuntimeError("Groq client is not initialized. Ensure use_groq=True and a valid api_key were provided during initialization.")
 
@@ -215,7 +462,9 @@ class PromptInjectionDetector:
         if self.use_groq:
             safe, hazard_code = self.detect_injection_api(prompt)
             if safe is False:
-                if hazard_code in self.hazard_categories:
+                if hazard_code == self.keyword_block_hazard_code:
+                    print("Injection detected! Input blocked by keyword filtering.")
+                elif hazard_code in self.hazard_categories:
                     print(f"Injection detected! Hazard Code: {hazard_code} - {self.hazard_categories[hazard_code]}")
                 elif hazard_code == "PARSE_ERROR":
                     print("Injection detected (unsafe)! Could not parse hazard code from Groq response.")
@@ -240,3 +489,22 @@ class PromptInjectionDetector:
                 print(f"Injection detected with a probability of {probability:.2f} (HF model).")
             else:
                 print(f"No injection detected (HF model).")
+
+    def check_response_safety(self, response):
+        """
+        Check if a response contains blocked keywords (for output layer filtering).
+        
+        Args:
+            response (str): Response text to check
+            
+        Returns:
+            tuple: (is_safe, matched_keywords)
+        """
+        if not self.enable_keyword_blocking:
+            return True, []
+        
+        is_blocked, matched_keywords = self.check_output_keywords(response)
+        if is_blocked:
+            formatted_message = self.output_block_message.format(matched_keywords=matched_keywords)
+            print(formatted_message)
+        return not is_blocked, matched_keywords
