@@ -1,7 +1,7 @@
 Quick Start Guide
 ================
 
-This guide will help you get started with pytector for detecting prompt injections in text.
+This guide will help you get started with pytector for detecting prompt injections in text and implementing immediate security controls for your AI applications.
 
 Basic Usage
 -----------
@@ -96,6 +96,17 @@ Process multiple texts:
        print(f"Text: {text[:50]}...")
        print(f"Injection: {is_injection}, Confidence: {probability:.3f}")
        print()
+
+Security Considerations
+---------------------
+
+When implementing pytector in your applications:
+
+* **Test thoroughly** in your specific environment before production deployment
+* **Combine multiple layers** - use keyword blocking alongside ML detection
+* **Customize security policies** based on your application's specific needs
+* **Monitor and log** all blocked attempts for security analysis
+* **Remember** - this provides a basic security layer, implement additional measures as needed
 
 Error Handling
 -------------
