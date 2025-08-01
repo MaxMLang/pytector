@@ -77,6 +77,8 @@ More info can be found on the [Llama Guard 4 12B](https://huggingface.co/meta-ll
 
 ---
 
+
+
 ## Use Cases & Security Scenarios
 
 Pytector works best in scenarios where you need immediate security controls beyond what foundation models provide by default:
@@ -288,134 +290,7 @@ is_blocked, matched = detector.check_input_keywords(test_prompt)
 print(f"Blocked: {is_blocked}, Keywords: {matched}")
 ```
 
----
 
-## Methods
-
-### `__init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="meta-llama/llama-guard-4-12b", enable_keyword_blocking=False, input_keywords=None, output_keywords=None, case_sensitive=False, input_block_message=None, output_block_message=None, keyword_block_hazard_code=None)`
-
-Initializes a new instance of the `PromptInjectionDetector`.
-
-- `model_name_or_url`: A string specifying the model. Can be a predefined key (`deberta`, `distilbert`), a Hugging Face model ID/URL, or a local path to a `.gguf` file.
-- `default_threshold`: Probability threshold for Hugging Face models.
-- `use_groq`: Set to `True` to enable Groq's API.
-- `api_key`: Required if `use_groq=True`.
-- `groq_model`: The specific model to use with the Groq API (default: `meta-llama/llama-guard-4-12b`).
-- `enable_keyword_blocking`: Set to `True` to enable keyword-based blocking (default: `False`).
-- `input_keywords`: Custom list of keywords for input blocking (uses default list if `None` and `enable_keyword_blocking=True`).
-- `output_keywords`: Custom list of keywords for output blocking (uses default list if `None` and `enable_keyword_blocking=True`).
-- `case_sensitive`: Set to `True` for case-sensitive keyword matching (default: `False`).
-- `input_block_message`: Custom message for input blocking (use `{matched_keywords}` placeholder).
-- `output_block_message`: Custom message for output blocking (use `{matched_keywords}` placeholder).
-- `keyword_block_hazard_code`: Custom hazard code for keyword blocking (default: `"KEYWORD_BLOCK"`).
-
-### `detect_injection(self, prompt, threshold=None)`
-
-Evaluates whether a text prompt is a prompt injection attack using a local model (Hugging Face or GGUF).
-
-- Returns `(is_injected, probability)`. `probability` is `None` for GGUF models.
-
-### `detect_injection_api(self, prompt)`
-
-Uses Groq's API to evaluate a prompt for unsafe content.
-
-- Returns `(is_safe, hazard_code)`. `is_safe` can be `True`, `False`, or `None` (on API error). `hazard_code` can be the specific code (e.g., `S1`), `None` (if safe), `API_ERROR`, or `PARSE_ERROR`.
-
-### `report_injection_status(self, prompt, threshold=None)`
-
-Reports whether a prompt is a potential injection or contains unsafe content, handling different detector types (HF, Groq, GGUF).
-
-### `check_input_keywords(self, prompt)`
-
-Checks if input prompt contains blocked keywords.
-
-- Returns `(is_blocked, matched_keywords)` tuple.
-
-### `check_output_keywords(self, response)`
-
-Checks if output response contains blocked keywords.
-
-- Returns `(is_blocked, matched_keywords)` tuple.
-
-### `check_response_safety(self, response)`
-
-Checks if a response is safe (doesn't contain blocked keywords).
-
-- Returns `(is_safe, matched_keywords)` tuple.
-
-### `add_input_keywords(self, keywords)`
-
-Adds keywords to the input blocking list.
-
-- `keywords`: String or list of keywords to add.
-
-### `add_output_keywords(self, keywords)`
-
-Adds keywords to the output blocking list.
-
-- `keywords`: String or list of keywords to add.
-
-### `remove_input_keywords(self, keywords)`
-
-Removes keywords from the input blocking list.
-
-- `keywords`: String or list of keywords to remove.
-
-### `remove_output_keywords(self, keywords)`
-
-Removes keywords from the output blocking list.
-
-- `keywords`: String or list of keywords to remove.
-
-### `get_input_keywords(self)`
-
-Gets the current list of input blocking keywords.
-
-- Returns a copy of the current input keywords list.
-
-### `get_output_keywords(self)`
-
-Gets the current list of output blocking keywords.
-
-- Returns a copy of the current output keywords list.
-
-### `set_input_block_message(self, message)`
-
-Sets custom message for input blocking.
-
-- `message`: Custom message (use `{matched_keywords}` placeholder).
-
-### `set_output_block_message(self, message)`
-
-Sets custom message for output blocking.
-
-- `message`: Custom message (use `{matched_keywords}` placeholder).
-
-### `set_keyword_block_hazard_code(self, hazard_code)`
-
-Sets custom hazard code for keyword blocking.
-
-- `hazard_code`: Custom hazard code.
-
-### `get_input_block_message(self)`
-
-Gets the current input block message.
-
-- Returns the current input block message.
-
-### `get_output_block_message(self)`
-
-Gets the current output block message.
-
-- Returns the current output block message.
-
-### `get_keyword_block_hazard_code(self)`
-
-Gets the current keyword block hazard code.
-
-- Returns the current keyword block hazard code.
-
----
 
 ## Security Best Practices
 
