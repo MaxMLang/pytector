@@ -469,6 +469,32 @@ Contributions are welcome! We particularly encourage contributions related to:
 
 Please read our [Contributing Guide](contributing.md) for details on our code of conduct and the process for submitting pull requests.
 
+## Attribution
+
+I believe open source thrives on trust, transparency, and mutual respect. While Pytector is released under the Apache 2.0 license, I've unfortunately seen cases where people copy code 1:1 without any mention of the original work.
+
+### Citation
+
+If you use Pytector in academic work or research, please cite:
+
+```bibtex
+@software{pytector2024,
+  title={Pytector: Prompt Injection Detection with Keyword Blocking},
+  author={Lang, Max Melchior},
+  year={2024},
+  url={https://github.com/MaxMLang/pytector},
+  note={Pytector is a Python package that helps you detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. It can also integrate with Groq's Llama Guard API for enhanced content safety detection, categorizing unsafe content based on specific hazard codes.}
+}
+```
+
+### Simple Attribution
+
+- **Direct usage**: "This project uses Pytector for prompt injection detection"
+- **Modified code**: "Based on Pytector (Lang, 2024) with modifications for [your use case]"
+- **GitHub**: Link to https://github.com/MaxMLang/pytector in your README
+
+Using Pytector "as is" for internal or not-for-profit projects is absolutely fine. I just ask for basic transparency when you build on this work. For detailed licensing information, see the [LICENSE](LICENSE) file (Apache 2.0).
+
 ---
 
 ## License
