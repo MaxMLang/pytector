@@ -1,6 +1,6 @@
 # Pytector
 <p align="center">
-  <img src="https://github.com/MaxMLang/assets/blob/main/pytector-logo.png?raw=true" width="200" height="200" alt="Pytector Logo">
+  <img src="https://github.com/MaxMLang/assets/blob/main/pytector-logo.png?raw=true" width="400" height="600" alt="Pytector Logo">
 </p>
 
 ![Build](https://img.shields.io/github/actions/workflow/status/MaxMLang/pytector/.github/workflows/workflow.yml?branch=main)
