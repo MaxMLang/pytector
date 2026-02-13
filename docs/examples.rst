@@ -110,8 +110,8 @@ Implement immediate security controls with keyword blocking:
    # Initialize with keyword blocking enabled
    detector = PromptInjectionDetector(
        enable_keyword_blocking=True,
-       input_block_message="🚫 SECURITY BLOCK: {matched_keywords}",
-       output_block_message="🚫 SECURITY BLOCK: {matched_keywords}"
+       input_block_message="SECURITY BLOCK: {matched_keywords}",
+       output_block_message="SECURITY BLOCK: {matched_keywords}"
    )
    
    # Test input keyword blocking
@@ -139,7 +139,7 @@ Create application-specific security policies:
    detector = PromptInjectionDetector(
        enable_keyword_blocking=True,
        input_keywords=financial_keywords,
-       input_block_message="💰 FINANCIAL SECURITY: {matched_keywords}"
+       input_block_message="FINANCIAL SECURITY: {matched_keywords}"
    )
    
    # Test financial security
@@ -161,8 +161,8 @@ Update security policies at runtime:
    detector.add_output_keywords(["compromised", "hacked"])
    
    # Update security messages
-   detector.set_input_block_message("🚨 ALERT: {matched_keywords}")
-   detector.set_output_block_message("🚨 ALERT: {matched_keywords}")
+   detector.set_input_block_message("ALERT: {matched_keywords}")
+   detector.set_output_block_message("ALERT: {matched_keywords}")
    
    # Test updated policies
    test_prompt = "This is a malicious attack attempt"
@@ -182,13 +182,17 @@ Using Groq API:
 
 .. code-block:: python
 
-   # Use Groq API with Llama Guard
+   # Use Groq API with the default safeguard model
    detector = PromptInjectionDetector(
        use_groq=True,
        api_key="your-groq-api-key"
    )
-   is_safe, hazard_code = detector.detect_injection_api("Your text here")
-   print(f"Safe: {is_safe}, Hazard: {hazard_code}")
+   is_safe, raw_response = detector.detect_injection_api(
+       "Your text here",
+       return_raw=True,
+   )
+   print(f"Safe: {is_safe}")
+   print(f"Raw response: {raw_response}")
 
 Error Handling
 --------------

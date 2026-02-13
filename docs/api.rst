@@ -45,7 +45,7 @@ The following configuration options are available when initializing the detector
      - API key for Groq service (required if use_groq=True)
    * - groq_model
      - str
-     - Groq model to use for detection (default: meta-llama/llama-guard-4-12b)
+     - Groq model to use for detection (default: openai/gpt-oss-safeguard-20b)
 
 Predefined Models
 ----------------
@@ -65,45 +65,16 @@ The following predefined models are available:
    * - distilbert-onnx
      - prompt-security/fmops-distilbert-prompt-injection-onnx
 
-Hazard Categories
+Groq API Behavior
 -----------------
 
-When using Groq API, the following hazard categories are supported:
+``detect_injection_api`` returns:
 
-.. list-table:: Hazard Categories
-   :widths: 10 90
-   :header-rows: 1
+* ``True`` for safe responses
+* ``False`` for unsafe responses (or non-standard responses treated conservatively as unsafe)
+* ``None`` when the API call fails
 
-   * - Code
-     - Description
-   * - S1
-     - Violent Crimes
-   * - S2
-     - Non-Violent Crimes
-   * - S3
-     - Sex-Related Crimes
-   * - S4
-     - Child Sexual Exploitation
-   * - S5
-     - Defamation
-   * - S6
-     - Specialized Advice
-   * - S7
-     - Privacy
-   * - S8
-     - Intellectual Property
-   * - S9
-     - Indiscriminate Weapons
-   * - S10
-     - Hate
-   * - S11
-     - Suicide & Self-Harm
-   * - S12
-     - Sexual Content
-   * - S13
-     - Elections
-   * - S14
-     - Code Interpreter Abuse
+Use ``return_raw=True`` to inspect raw model output as ``(is_safe, raw_response)``.
 
 Example Usage
 -------------
@@ -121,7 +92,7 @@ Example Usage
        use_groq=True,
        api_key="your-api-key"
    )
-   is_safe, hazard_code = detector.detect_injection_api("Your text here")
+   is_safe = detector.detect_injection_api("Your text here")
    
    # Using GGUF model
    detector = PromptInjectionDetector("path/to/model.gguf")

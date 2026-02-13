@@ -16,12 +16,12 @@ Welcome to pytector's documentation!
 Features
 --------
 
-* **🛡️ Prompt Injection Detection**: Uses open-source language models for prompt injection detection
-* **🔒 Content Safety**: Support for Groq's Llama Guard API for comprehensive safety detection
-* **🚫 Keyword-Based Blocking**: Restrictive keyword filtering for immediate security control
-* **⚙️ Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
-* **🚀 Rapid Deployment**: Designed for quick integration into projects needing immediate security layers
-* **🔧 Configurable**: Customizable detection parameters, thresholds, and security policies
+* **Prompt Injection Detection**: Uses open-source language models for prompt injection detection
+* **Content Safety**: Support for Groq-hosted safeguard models for safety detection
+* **Keyword-Based Blocking**: Restrictive keyword filtering for immediate security control
+* **Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
+* **Rapid Deployment**: Designed for quick integration into projects needing immediate security layers
+* **Configurable**: Customizable detection parameters, thresholds, and security policies
 
 Quick Start
 ----------

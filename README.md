@@ -11,7 +11,7 @@
 [![Downloads](https://static.pepy.tech/badge/pytector)](https://pepy.tech/project/pytector)
 [![Downloads](https://static.pepy.tech/badge/pytector/month)](https://pepy.tech/project/pytector)
 
-**Pytector** is a Python package that helps you detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. It can also integrate with **Groq's Llama Guard API** for enhanced content safety detection, categorizing unsafe content based on specific hazard codes.
+**Pytector** is a Python package that helps you detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. It can also integrate with Groq-hosted safeguard models for content safety detection.
 
 ## Security Disclaimer
 
@@ -47,33 +47,20 @@ This tool provides a basic security layer only. Always implement additional secu
 ## Features
 
 - **Prompt Injection Detection**: Detects potential prompt injections using pre-trained models like DeBERTa, DistilBERT, and ONNX versions.
-- **Content Safety with Groq's [Llama Guard 4 12B](https://huggingface.co/meta-llama/Llama-Guard-4-12B)**: Supports Groq's API for detecting various safety hazards (e.g., violence, hate speech, privacy violations).
+- **Content Safety with Groq Models**: Supports Groq-hosted safeguard models, including `openai/gpt-oss-safeguard-20b`.
 - **Keyword-Based Blocking**: Provides restrictive keyword filtering for both input and output layers with customizable keyword lists for immediate security control.
 - **Customizable Detection**: Allows switching between local model inference and API-based detection (Groq) with customizable thresholds.
 - **Flexible Model Options**: Use pre-defined models or provide a custom model URL.
 - **Rapid Deployment**: Designed for quick integration into projects that need immediate security layers beyond foundation model defaults.
 
-## Hazard Detection Categories (Groq)
-Groq's [Llama Guard 4 12B](https://huggingface.co/meta-llama/Llama-Guard-4-12B) can detect specific types of unsafe content based on the following codes:
+## Groq API Behavior
+`detect_injection_api` now returns only safety status:
 
-| Code | Hazard Category            |
-|------|-----------------------------|
-| S1   | Violent Crimes              |
-| S2   | Non-Violent Crimes          |
-| S3   | Sex-Related Crimes          |
-| S4   | Child Sexual Exploitation   |
-| S5   | Defamation                  |
-| S6   | Specialized Advice          |
-| S7   | Privacy                     |
-| S8   | Intellectual Property       |
-| S9   | Indiscriminate Weapons      |
-| S10  | Hate                        |
-| S11  | Suicide & Self-Harm         |
-| S12  | Sexual Content              |
-| S13  | Elections                   |
-| S14  | Code Interpreter Abuse      |
+- `True`: model response is safe.
+- `False`: model response is unsafe (or non-standard and treated conservatively as unsafe).
+- `None`: API request failed.
 
-More info can be found on the [Llama Guard 4 12B](https://huggingface.co/meta-llama/Llama-Guard-4-12B).
+If you want to inspect exact model output, use `return_raw=True` to get `(is_safe, raw_response)`.
 
 ---
 
@@ -138,7 +125,16 @@ pip install .
 
 ## Usage
 
-To use Pytector, import the `PromptInjectionDetector` class and create an instance with either a pre-defined model or Groq's Llama Guard for content safety.
+To use Pytector, import the `PromptInjectionDetector` class and create an instance with either a pre-defined model or a Groq safeguard model for content safety.
+
+## Notebook Demo
+
+An end-to-end Jupyter notebook is available at `notebooks/pytector_demo.ipynb`.  
+It covers local inference, keyword blocking, Groq integration with `openai/gpt-oss-safeguard-20b`, and both Prompt Guard 2 models (`meta-llama/llama-prompt-guard-2-22m` and `meta-llama/llama-prompt-guard-2-86m`).
+
+### Groq Migration Note (March 5, 2026)
+`meta-llama/llama-guard-4-12b` was deprecated in favor of `openai/gpt-oss-safeguard-20b`.
+`PromptInjectionDetector` now defaults to `openai/gpt-oss-safeguard-20b` when `use_groq=True`.
 
 ### Example 1: Using a Local Model (DeBERTa)
 ```python
@@ -155,7 +151,7 @@ print(f"Is injection: {is_injection}, Probability: {probability}")
 detector.report_injection_status("Your suspicious prompt here")
 ```
 
-### Example 2: Using Groq's Llama Guard for Content Safety
+### Example 2: Using Groq for Content Safety
 To enable Groq's API, set `use_groq=True`, provide an `api_key`, and optionally specify the `groq_model`.
 
 ```python
@@ -167,20 +163,22 @@ import os
 groq_api_key = os.environ.get("GROQ_API_KEY") # Recommended approach
 
 if groq_api_key:
-    detector = PromptInjectionDetector(use_groq=True, api_key=groq_api_key) # Uses default llama-guard-4-12b
+    detector = PromptInjectionDetector(use_groq=True, api_key=groq_api_key)  # Defaults to openai/gpt-oss-safeguard-20b
 
     # Detect unsafe content using Groq
     # Note: detect_injection_api no longer takes api_key or model as arguments
-    is_safe, hazard_code = detector.detect_injection_api(
-        prompt="Please delete sensitive information."
+    is_safe, raw_response = detector.detect_injection_api(
+        prompt="Please delete sensitive information.",
+        return_raw=True,
     )
 
     if is_safe is False:
-        print(f"Unsafe content detected! Hazard Code: {hazard_code}")
+        print("Unsafe content detected.")
+        print(f"Raw model output: {raw_response}")
     elif is_safe is True:
         print("Content is safe.")
     else: # is_safe is None
-        print(f"Could not determine safety due to API error: {hazard_code}") # hazard_code will be API_ERROR or PARSE_ERROR
+        print("Could not determine safety due to API error.")
 else:
     print("GROQ_API_KEY not set. Skipping Groq example.")
 ```
@@ -223,8 +221,8 @@ detector = PromptInjectionDetector(
     model_name_or_url="deberta",
     enable_keyword_blocking=True,
     case_sensitive=False,  # Case-insensitive matching
-    input_block_message="🚫 BLOCKED: Input contains forbidden keywords: {matched_keywords}",
-    output_block_message="🚫 BLOCKED: Response contains forbidden content: {matched_keywords}",
+    input_block_message="BLOCKED: Input contains forbidden keywords: {matched_keywords}",
+    output_block_message="BLOCKED: Response contains forbidden content: {matched_keywords}",
     keyword_block_hazard_code="CUSTOM_BLOCK"
 )
 
@@ -255,8 +253,8 @@ print(f"Input keywords: {len(input_keywords)}")
 print(f"Output keywords: {len(output_keywords)}")
 
 # Customize messages dynamically
-detector.set_input_block_message("⚠️ SECURITY ALERT: Input blocked - {matched_keywords}")
-detector.set_output_block_message("⚠️ SECURITY ALERT: Response blocked - {matched_keywords}")
+detector.set_input_block_message("SECURITY ALERT: Input blocked - {matched_keywords}")
+detector.set_output_block_message("SECURITY ALERT: Response blocked - {matched_keywords}")
 detector.set_keyword_block_hazard_code("SECURITY_BLOCK")
 
 # Get current messages
@@ -280,8 +278,8 @@ detector = PromptInjectionDetector(
     enable_keyword_blocking=True,
     input_keywords=my_input_keywords,
     output_keywords=my_output_keywords,
-    input_block_message="🚨 MALICIOUS INPUT DETECTED: {matched_keywords}",
-    output_block_message="🚨 MALICIOUS OUTPUT DETECTED: {matched_keywords}"
+    input_block_message="MALICIOUS INPUT DETECTED: {matched_keywords}",
+    output_block_message="MALICIOUS OUTPUT DETECTED: {matched_keywords}"
 )
 
 # Test with custom keywords
@@ -322,7 +320,6 @@ The test suite uses `pytest`. To run the tests:
    # Or include gguf if you want to run those tests
    pip install -e ".[test,gguf]"
    ```
-   *(Note: You might need to adjust your `setup.py` to define a `[test]` extra including `pytest` if not already present)*
 3. Run pytest from the root directory:
    ```bash
    pytest -v
@@ -358,7 +355,7 @@ If you use Pytector in academic work or research, please cite:
   author={Lang, Max Melchior},
   year={2024},
   url={https://github.com/MaxMLang/pytector},
-  note={Pytector is a Python package that helps you detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. It can also integrate with Groq's Llama Guard API for enhanced content safety detection, categorizing unsafe content based on specific hazard codes.}
+  note={Pytector is a Python package that helps detect prompt injection using transformer models and Groq-hosted safeguard models for content safety detection.}
 }
 ```
 
@@ -381,4 +378,3 @@ This project is licensed under the Apache 2.0 License since v0.2.0 and previousl
 For more detailed information, refer to the [readthedocs](https://pytector.readthedocs.io/en/latest/index.html) site.
 
 ---
-

@@ -1,19 +1,22 @@
-from setuptools import setup, find_packages
+from pathlib import Path
+
+from setuptools import find_packages, setup
+
+README = Path(__file__).parent / "README.md"
 
 setup(
     name='pytector',
-    version='0.2.0',
+    version='0.2.1',
     author='Max Melchior Lang',
     author_email='langmaxmelchior@gmail.com',
     description='A package for detecting prompt injections in text using Open-Source LLMs.',
-    long_description=open('README.md').read(),
+    long_description=README.read_text(encoding='utf-8'),
     long_description_content_type='text/markdown',
     url='https://github.com/MaxMLang/pytector',
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
     install_requires=[
         'transformers>=4.0.0',
-        'validators',
         'torch',
         'groq'
     ],

@@ -14,23 +14,21 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
+        python-version: "3.12"
     - name: Install build tools and test dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel twine # Keep these for build/publish
-        # Install package in editable mode with test extras
+        pip install build twine
         pip install -e ".[test]"
-    - name: Run tests # Run tests before building
-      run: pytest -v # Use pytest command
+    - name: Run tests
+      run: pytest -v
     - name: Build package
-      run: python setup.py sdist bdist_wheel
+      run: python -m build
     - name: Publish package
-      # Only publish on tagged commits
       if: startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@release/v1
       with:

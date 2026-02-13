@@ -48,7 +48,7 @@ You can specify different models for detection:
 Using Groq API
 -------------
 
-For cloud-based detection using Groq's Llama Guard:
+For cloud-based detection using Groq-hosted safeguard models:
 
 .. code-block:: python
 
@@ -57,9 +57,8 @@ For cloud-based detection using Groq's Llama Guard:
        api_key="your-groq-api-key"
    )
    
-   is_safe, hazard_code = detector.detect_injection_api("Your text here")
+   is_safe = detector.detect_injection_api("Your text here")
    print(f"Safe: {is_safe}")
-   print(f"Hazard code: {hazard_code}")
 
 Customizing Detection
 --------------------

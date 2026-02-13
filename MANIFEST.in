@@ -1,5 +1,5 @@
 include LICENSE
+include NOTICE
 include README.md
-include pytector.toml
-recursive-include docs *
-recursive-include examples *
+recursive-include docs *.rst *.md *.py Makefile requirements.txt
+prune docs/_build

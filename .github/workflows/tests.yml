@@ -4,21 +4,23 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
+        python-version: "3.12"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # Install package in editable mode with test extras
         pip install -e ".[test]"
     - name: Run tests
-      run: pytest -v # Use pytest command
+      run: pytest -v
     

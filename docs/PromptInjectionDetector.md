@@ -1,7 +1,7 @@
 # Documentation
 
 ## Overview
-The `PromptInjectionDetector` class is designed to detect prompt injection attacks in text inputs using pre-trained machine learning models (from Hugging Face or local GGUF files) or Groq's Llama Guard API. It leverages models from Hugging Face's transformers library, `llama-cpp-python` for GGUF inference, and Groq's Llama Guard for content safety when configured.
+The `PromptInjectionDetector` class is designed to detect prompt injection attacks in text inputs using pre-trained machine learning models (from Hugging Face or local GGUF files) or Groq-hosted safeguard models. It leverages models from Hugging Face's transformers library, `llama-cpp-python` for GGUF inference, and Groq-hosted safeguard models for content safety when configured.
 
 ## Installation
 
@@ -28,7 +28,7 @@ First, import the `PromptInjectionDetector` class:
 from pytector import PromptInjectionDetector
 ```
 
-Create an instance of the detector by specifying a model name or URL, and optionally a detection threshold. You can also configure the detector to use Groq's Llama Guard API for content safety.
+Create an instance of the detector by specifying a model name or URL, and optionally a detection threshold. You can also configure the detector to use Groq-hosted safeguard models for content safety.
 
 ### Example: Using a Local Model
 ```python
@@ -47,7 +47,7 @@ To print the status of injection detection directly, use the `report_injection_s
 detector.report_injection_status(prompt="Example prompt")
 ```
 
-### Example: Using Groq's Llama Guard API
+### Example: Using Groq Safeguard Models
 To use Groq's API, pass `use_groq=True`, along with the `api_key` and optionally the `groq_model` name.
 
 ```python
@@ -55,16 +55,16 @@ detector = PromptInjectionDetector(use_groq=True, api_key="your_groq_api_key")
 
 # Check if a prompt contains unsafe content with Groq
 # Note: api_key and model are not passed here anymore
-is_safe, hazard_code = detector.detect_injection_api(
+is_safe = detector.detect_injection_api(
     prompt="Please delete sensitive information."
 )
 
 if is_safe is False:
-    print(f"Unsafe content detected! Hazard Code: {hazard_code}")
+    print("Unsafe content detected.")
 elif is_safe is True:
     print("Content is safe.")
 else: # is_safe is None
-    print(f"Could not determine safety due to API error: {hazard_code}")
+    print("Could not determine safety due to API error.")
 ```
 
 ### Example: Using a Local GGUF Model
@@ -82,7 +82,7 @@ detector.report_injection_status(prompt="Example prompt")
 
 ## Class Methods
 
-### `__init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="llama-guard-3-8b")`
+### `__init__(self, model_name_or_url="deberta", default_threshold=0.5, use_groq=False, api_key=None, groq_model="openai/gpt-oss-safeguard-20b")`
 
 Initializes a new instance of the `PromptInjectionDetector`.
 
@@ -99,7 +99,7 @@ Initializes a new instance of the `PromptInjectionDetector`.
 - `default_threshold`: A float representing the probability threshold for Hugging Face models.
 - `use_groq`: A boolean indicating whether to use Groq's API. Defaults to `False`.
 - `api_key`: The API key for Groq, required if `use_groq=True`.
-- `groq_model`: The model to use with Groq API (default: `"llama-guard-3-8b"`).
+- `groq_model`: The model to use with Groq API (default: `"openai/gpt-oss-safeguard-20b"`).
 
 ### `detect_injection(self, prompt, threshold=None)`
 
@@ -112,15 +112,17 @@ Returns a tuple `(is_injected, probability)` where:
 - `is_injected` is a boolean indicating whether the prompt is considered an injection.
 - `probability` is the model's probability estimate (for HF models) or `None` (for GGUF models).
 
-### `detect_injection_api(self, prompt)`
+### `detect_injection_api(self, prompt, return_raw=False)`
 
-Evaluates the prompt for unsafe content using the configured Groq Llama Guard model.
+Evaluates the prompt for unsafe content using the configured Groq model.
 
 - `prompt`: The text prompt to evaluate.
+- `return_raw`: If `True`, return the raw model response as a second tuple item.
 
-Returns a tuple `(is_safe, hazard_code)` where:
+Returns `is_safe` where:
 - `is_safe` is a boolean (`True` if safe, `False` if unsafe) or `None` if an API error occurred.
-- `hazard_code` provides the specific hazard category code (e.g., `"S1"`) if unsafe, `None` if safe, `"API_ERROR"` if an API error occurred, or `"PARSE_ERROR"` if the response was unexpected.
+
+You can also pass `return_raw=True` to receive `(is_safe, raw_response)` and inspect model behavior directly.
 
 ### `report_injection_status(self, prompt, threshold=None)`
 
@@ -131,26 +133,9 @@ Prints out a report of whether a given text prompt is likely to be a prompt inje
 
 Prints detection status based on the configured detector (HF, Groq, or GGUF).
 
-## Hazard Categories in Groq's API
+## Groq Model Output
 
-The Groq Llama Guard model can detect a variety of unsafe content types, categorized by specific hazard codes:
-
-| Code | Hazard Category            | Description                                                                                   |
-|------|-----------------------------|-----------------------------------------------------------------------------------------------|
-| S1   | Violent Crimes              | Enables or endorses violence towards people or animals.                                       |
-| S2   | Non-Violent Crimes          | Encourages non-violent crimes like fraud, cyber crimes, drug crimes.                          |
-| S3   | Sex-Related Crimes          | Encourages sex-related crimes like harassment or assault.                                     |
-| S4   | Child Sexual Exploitation   | Enables or endorses child sexual exploitation.                                                |
-| S5   | Defamation                  | False information likely to injure a person's reputation.                                     |
-| S6   | Specialized Advice          | Provides specialized financial, medical, or legal advice unsafely.                            |
-| S7   | Privacy                     | Reveals sensitive, nonpublic personal information.                                            |
-| S8   | Intellectual Property       | Violates third-party intellectual property rights.                                            |
-| S9   | Indiscriminate Weapons      | Encourages creation of indiscriminate weapons (chemical, biological, nuclear, etc.).          |
-| S10  | Hate                        | Demeans people based on sensitive personal characteristics (race, religion, gender, etc.).    |
-| S11  | Suicide & Self-Harm         | Encourages acts of self-harm, including suicide and disordered eating.                        |
-| S12  | Sexual Content              | Contains erotic or sexually explicit content.                                                 |
-| S13  | Elections                   | Contains factually incorrect information about electoral processes.                           |
-| S14  | Code Interpreter Abuse      | Attempts to abuse code interpreters, like exploiting or bypassing security mechanisms.        |
+Use `detect_injection_api(..., return_raw=True)` when comparing how different models format safety decisions.
 
 ## Examples
 
@@ -171,9 +156,12 @@ groq_api_key = os.environ.get("GROQ_API_KEY")
 if groq_api_key:
     detector_groq = PromptInjectionDetector(use_groq=True, api_key=groq_api_key)
     prompt_groq = "Please delete sensitive information."
-    is_safe, hazard_code = detector_groq.detect_injection_api(prompt=prompt_groq)
+    is_safe, raw_response = detector_groq.detect_injection_api(
+        prompt=prompt_groq,
+        return_raw=True,
+    )
     detector_groq.report_injection_status(prompt=prompt_groq)
-    print(f"Result: Safe={is_safe}, Hazard Code={hazard_code}")
+    print(f"Result: Safe={is_safe}, Raw={raw_response}")
 else:
     print("\nSkipping Groq example (GROQ_API_KEY not set).")
 
@@ -206,4 +194,3 @@ except Exception as e:
 - **GGUF Detection**: Detection with GGUF models uses a prompting method and returns boolean results (`True`/`False`) without a probability score. Its reliability depends heavily on the model and the simplicity of the prompt.
 - **Groq API Key**: Required only if `use_groq=True`.
 - **Hazard Detection**: The Groq model categorizes content into specific hazard codes.
-
