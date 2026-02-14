@@ -60,6 +60,24 @@ For cloud-based detection using Groq-hosted safeguard models:
    is_safe = detector.detect_injection_api("Your text here")
    print(f"Safe: {is_safe}")
 
+LangChain Guardrail (LCEL)
+--------------------------
+
+Use ``PytectorGuard`` as the first runnable in your chain:
+
+.. code-block:: python
+
+   from langchain_core.prompts import PromptTemplate
+   from langchain_core.runnables import RunnableLambda
+   from pytector.langchain import PytectorGuard
+
+   guard = PytectorGuard(threshold=0.8)
+   prompt = PromptTemplate.from_template("User request: {query}")
+   mock_llm = RunnableLambda(lambda prompt_value: f"MOCK: {prompt_value.to_string()}")
+
+   chain = guard | RunnableLambda(lambda text: {"query": text}) | prompt | mock_llm
+   print(chain.invoke("Explain model safety in one sentence."))
+
 Customizing Detection
 --------------------
 
@@ -125,5 +143,6 @@ Next Steps
 ----------
 
 * Check out the :doc:`api` for detailed API documentation
+* Read :doc:`langchain` for the full LangChain integration guide
 * See :doc:`examples` for more advanced usage examples
 * Learn about :doc:`contributing` if you want to contribute to the project 

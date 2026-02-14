@@ -22,7 +22,8 @@ setup(
     ],
     extras_require={
         'gguf': ['llama-cpp-python>=0.2.0'],
-        'test': ['pytest>=8.0'],
+        'langchain': ['langchain-core>=0.3.0'],
+        'test': ['pytest>=8.0', 'langchain-core>=0.3.0'],
     },
     classifiers=[
         'Programming Language :: Python :: 3',

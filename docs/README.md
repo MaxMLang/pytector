@@ -26,6 +26,7 @@ This directory contains the documentation for the pytector package, built using 
 - `installation.rst` - Installation guide
 - `quickstart.rst` - Quick start guide
 - `api.rst` - API reference
+- `langchain.rst` - LangChain integration guide
 - `examples.rst` - Usage examples
 - `contributing.rst` - Contributing guidelines
 - `conf.py` - Sphinx configuration

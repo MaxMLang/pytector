@@ -19,6 +19,14 @@ PromptInjectionDetector
    :undoc-members:
    :show-inheritance:
 
+LangChain Integration
+---------------------
+
+.. automodule:: pytector.langchain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Configuration
 -------------
 

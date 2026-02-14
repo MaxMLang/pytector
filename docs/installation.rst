@@ -7,7 +7,7 @@ Requirements
 * Python 3.9 or higher
 * PyTorch (for Hugging Face models)
 * Transformers library
-* Validators library
+* Groq Python SDK
 
 Basic Installation
 -----------------
@@ -34,6 +34,15 @@ Or install the GGUF dependency separately:
 .. code-block:: bash
 
    pip install llama-cpp-python>=0.2.0
+
+Installation with LangChain Integration
+--------------------------------------
+
+To use the LCEL guardrail runnable (``PytectorGuard``), install:
+
+.. code-block:: bash
+
+   pip install pytector[langchain]
 
 Installation for Development
 ---------------------------

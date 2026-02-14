@@ -10,6 +10,7 @@ Welcome to pytector's documentation!
    installation
    quickstart
    api
+   langchain
    examples
    contributing
 
@@ -22,6 +23,7 @@ Features
 * **Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
 * **Rapid Deployment**: Designed for quick integration into projects needing immediate security layers
 * **Configurable**: Customizable detection parameters, thresholds, and security policies
+* **LangChain Integration**: LCEL-compatible guardrail runnable for pre-model prompt checks
 
 Quick Start
 ----------
