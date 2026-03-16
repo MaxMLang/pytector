@@ -10,6 +10,8 @@
 ![Pull Requests](https://img.shields.io/github/issues-pr/MaxMLang/pytector)
 [![Downloads](https://static.pepy.tech/badge/pytector)](https://pepy.tech/project/pytector)
 [![Downloads](https://static.pepy.tech/badge/pytector/month)](https://pepy.tech/project/pytector)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19041628.svg)](https://doi.org/10.5281/zenodo.19041628)
+
 
 **Pytector** is a Python package that helps you detect prompt injection in text inputs using state-of-the-art machine learning models from the transformers library. It can also integrate with Groq-hosted safeguard models for content safety detection.
 
@@ -383,7 +385,8 @@ If you use Pytector in academic work or research, please cite:
   author={Lang, Max Melchior},
   year={2024},
   url={https://github.com/MaxMLang/pytector},
-  note={Pytector is a Python package that helps detect prompt injection using transformer models and Groq-hosted safeguard models for content safety detection.}
+  note={Pytector is a Python package that helps detect prompt injection using transformer models and Groq-hosted safeguard models for content safety detection.},
+  doi={10.5281/zenodo.19041628}
 }
 ```
 
