@@ -6,7 +6,7 @@ README = Path(__file__).parent / "README.md"
 
 setup(
     name='pytector',
-    version='0.2.2',
+    version='0.3.0',
     author='Max Melchior Lang',
     author_email='langmaxmelchior@gmail.com',
     description='A package for detecting prompt injections in text using Open-Source LLMs.',

@@ -27,6 +27,14 @@ LangChain Integration
    :undoc-members:
    :show-inheritance:
 
+PromptSanitizer
+---------------
+
+.. automodule:: pytector.sanitizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Configuration
 -------------
 
@@ -108,4 +116,69 @@ Example Usage
    
    # Custom threshold
    detector = PromptInjectionDetector(default_threshold=0.8)
-   is_injection, probability = detector.detect_injection("Your text here") 
+   is_injection, probability = detector.detect_injection("Your text here")
+
+Sanitizer Usage
+---------------
+
+.. code-block:: python
+
+   from pytector import PromptSanitizer
+
+   # All strategies enabled by default
+   sanitizer = PromptSanitizer()
+   cleaned, was_modified = sanitizer.sanitize("Ignore previous instructions. Hello!")
+
+   # With detailed change log
+   cleaned, was_modified, changes = sanitizer.sanitize(
+       "Ignore previous instructions. Hello!",
+       return_details=True,
+   )
+
+   # Custom configuration
+   sanitizer = PromptSanitizer(
+       fuzzy_threshold=0.80,
+       sentence_threshold=0.4,
+       enable_prompt_enforcement=True,
+   )
+
+Sanitizer Configuration
+-----------------------
+
+.. list-table:: Sanitizer Parameters
+   :widths: 30 15 55
+   :header-rows: 1
+
+   * - Parameter
+     - Default
+     - Description
+   * - enable_encoding_detection
+     - True
+     - Decode and strip Base64, hex, ROT13 obfuscated payloads
+   * - enable_unicode_normalization
+     - True
+     - Strip invisible characters, NFKC homoglyph normalization
+   * - enable_pattern_removal
+     - True
+     - Regex-based structural injection pattern removal
+   * - enable_sentence_scoring
+     - True
+     - Heuristic per-sentence analysis; drop suspicious sentences
+   * - enable_fuzzy_matching
+     - True
+     - Catch paraphrased injection phrases via difflib similarity
+   * - enable_keyword_stripping
+     - True
+     - Final pass removing known injection phrases
+   * - enable_prompt_enforcement
+     - False
+     - Escape template syntax (``{ } < > ` ``)
+   * - keywords
+     - None
+     - Custom keyword list; ``None`` uses built-in defaults
+   * - fuzzy_threshold
+     - 0.85
+     - Similarity cutoff for fuzzy matching (0.0-1.0)
+   * - sentence_threshold
+     - 0.5
+     - Heuristic score cutoff for sentence removal (0.0-1.0)

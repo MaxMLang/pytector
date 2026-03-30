@@ -1,8 +1,9 @@
 from .detector import PromptInjectionDetector
+from .sanitizer import PromptSanitizer
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
-__all__ = ["PromptInjectionDetector"]
+__all__ = ["PromptInjectionDetector", "PromptSanitizer"]
 
 
 def __getattr__(name):
