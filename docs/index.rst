@@ -21,6 +21,9 @@ Features
 * **Content Safety**: Support for Groq-hosted safeguard models for safety detection
 * **Keyword-Based Blocking**: Restrictive keyword filtering for immediate security control
 * **Input Sanitization**: Six-strategy pipeline to clean injection content from user input (encoding detection, unicode normalization, pattern removal, sentence scoring, fuzzy matching, keyword stripping) with zero additional dependencies
+* **PII Detection**: NER-based PII scanning using PasteProof PII Detector (ModernBERT, F1 0.97) covering 27 entity types — financial, credential, healthcare, GDPR, identity, contact, and address data
+* **Toxicity Detection**: Multilingual toxicity classification using citizenlab DistilBERT (F1 0.94, 10 languages)
+* **Regex Scanner**: Customizable rule-based pattern matching for PII and credentials (email, phone, SSN, credit card, IP, API keys, JWT) using pure Python stdlib
 * **Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
 * **Rapid Deployment**: Designed for quick integration into projects needing immediate security layers
 * **Configurable**: Customizable detection parameters, thresholds, and security policies

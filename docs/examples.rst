@@ -304,6 +304,107 @@ Sanitize first, then run the detector for defence in depth:
    else:
        print(f"Safe: {cleaned}")
 
+PII Detection
+-------------
+
+Scan and redact personally identifiable information:
+
+.. code-block:: python
+
+   from pytector import PIIScanner
+
+   scanner = PIIScanner()
+
+   # Scan
+   has_pii, entities = scanner.scan("Contact john@acme.com, SSN 123-45-6789")
+   for ent in entities:
+       print(f"  [{ent['type']}] {ent['text']} (score={ent['score']:.2f})")
+
+   # Redact
+   print(scanner.redact("Contact john@acme.com, SSN 123-45-6789"))
+   # "Contact [REDACTED], SSN [REDACTED]"
+
+   # Report
+   scanner.report("Contact john@acme.com, SSN 123-45-6789")
+
+Filter to specific entity types:
+
+.. code-block:: python
+
+   scanner = PIIScanner(entity_types=["EMAIL", "CREDIT_CARD"])
+   has_pii, entities = scanner.scan("Email: a@b.com, SSN: 123-45-6789")
+   # Only EMAIL entities returned
+
+Custom threshold:
+
+.. code-block:: python
+
+   scanner = PIIScanner(threshold=0.9)
+   has_pii, entities = scanner.scan("john@acme.com")
+   # Only high-confidence entities
+
+Toxicity Detection
+------------------
+
+Classify text as toxic or non-toxic:
+
+.. code-block:: python
+
+   from pytector import ToxicityDetector
+
+   detector = ToxicityDetector()
+
+   is_toxic, score = detector.detect("You are terrible and worthless")
+   print(f"Toxic: {is_toxic}, Score: {score:.2f}")
+
+   # Adjust threshold per call
+   is_toxic, score = detector.detect("Mildly rude remark", threshold=0.8)
+
+   # Human-readable report
+   detector.report("Have a wonderful day!")
+
+Regex Scanner (Customizable)
+-----------------------------
+
+Fast rule-based scanning with full pattern customization:
+
+.. code-block:: python
+
+   from pytector import RegexScanner
+
+   # Default patterns: EMAIL, PHONE, SSN, CREDIT_CARD, IP_ADDRESS, API_KEY, JWT_TOKEN
+   scanner = RegexScanner()
+
+   has_match, matches = scanner.scan("Key: sk-live-abc123def456, IP: 10.0.0.1")
+   for m in matches:
+       print(f"  [{m['pattern_name']}] {m['match']}")
+
+   # Redact
+   print(scanner.redact("Email me at user@example.com"))
+
+Add and remove patterns at runtime:
+
+.. code-block:: python
+
+   scanner = RegexScanner()
+
+   scanner.add_pattern("AWS_ACCESS_KEY", r"AKIA[0-9A-Z]{16}")
+   scanner.add_pattern("INTERNAL_ID", r"INT-\d{6}")
+   scanner.remove_pattern("JWT_TOKEN")
+
+   print(scanner.get_patterns())
+
+Use only custom patterns (no defaults):
+
+.. code-block:: python
+
+   custom = RegexScanner(
+       patterns={"ORDER_ID": r"ORD-\d{8}", "ZIP": r"\b\d{5}(?:-\d{4})?\b"},
+       use_defaults=False,
+   )
+   has_match, matches = custom.scan("Order ORD-20260330, zip 90210")
+   print(custom.redact("Order ORD-20260330, zip 90210"))
+
 Error Handling
 --------------
 

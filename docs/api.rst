@@ -182,3 +182,126 @@ Sanitizer Configuration
    * - sentence_threshold
      - 0.5
      - Heuristic score cutoff for sentence removal (0.0-1.0)
+
+PIIScanner
+----------
+
+.. automodule:: pytector.pii
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Uses the `PasteProof PII Detector <https://huggingface.co/joneauxedgar/pasteproof-pii-detector-v2>`_
+(ModernBERT-base, F1 0.97) for NER-based PII detection across 27 entity types.
+Requires ``transformers >= 4.48.0`` for ModernBERT support.
+
+.. code-block:: python
+
+   from pytector import PIIScanner
+
+   scanner = PIIScanner()
+   has_pii, entities = scanner.scan("Email john@acme.com, SSN 123-45-6789")
+   print(scanner.redact("Email john@acme.com, SSN 123-45-6789"))
+
+   # Filter to specific entity types
+   scanner = PIIScanner(entity_types=["EMAIL", "CREDIT_CARD"], threshold=0.7)
+
+.. list-table:: PIIScanner Parameters
+   :widths: 20 20 60
+   :header-rows: 1
+
+   * - Parameter
+     - Type
+     - Description
+   * - model_name
+     - str
+     - Predefined key (``pasteproof-v3``) or HuggingFace model ID / local path
+   * - threshold
+     - float
+     - Minimum confidence for an entity to be reported (default 0.5)
+   * - entity_types
+     - list[str] | None
+     - Filter to specific types (e.g. ``["EMAIL", "SSN"]``); ``None`` = all
+
+.. admonition:: Citation
+
+   .. code-block:: text
+
+      @model{pasteproof_pii_detector,
+        author    = {Jonathan Edgar},
+        title     = {PasteProof PII Detector},
+        year      = {2025},
+        publisher = {Hugging Face},
+        url       = {https://huggingface.co/joneauxedgar/pasteproof-pii-detector-v2}
+      }
+
+ToxicityDetector
+----------------
+
+.. automodule:: pytector.toxicity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Uses `citizenlab/distilbert-base-multilingual-cased-toxicity <https://huggingface.co/citizenlab/distilbert-base-multilingual-cased-toxicity>`_
+(F1-micro 0.94, 10 languages) for toxicity classification.
+
+.. code-block:: python
+
+   from pytector import ToxicityDetector
+
+   detector = ToxicityDetector()
+   is_toxic, score = detector.detect("You are terrible")
+   detector.report("Have a wonderful day!")
+
+.. list-table:: ToxicityDetector Parameters
+   :widths: 20 20 60
+   :header-rows: 1
+
+   * - Parameter
+     - Type
+     - Description
+   * - model_name
+     - str
+     - Predefined key (``citizenlab``) or HuggingFace model ID / local path
+   * - threshold
+     - float
+     - Score above which text is considered toxic (default 0.5)
+
+RegexScanner
+------------
+
+.. automodule:: pytector.regex_scanner
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Pure-stdlib rule-based scanner with customizable patterns.
+
+.. code-block:: python
+
+   from pytector import RegexScanner
+
+   scanner = RegexScanner()
+   has_match, matches = scanner.scan("Key: sk-live-abc123def456")
+   print(scanner.redact("Email user@example.com"))
+
+   # Custom patterns only
+   custom = RegexScanner(
+       patterns={"ORDER_ID": r"ORD-\d{8}"},
+       use_defaults=False,
+   )
+
+.. list-table:: RegexScanner Parameters
+   :widths: 20 20 60
+   :header-rows: 1
+
+   * - Parameter
+     - Type
+     - Description
+   * - patterns
+     - dict[str, str] | None
+     - ``{NAME: regex}`` mapping merged with defaults (or used alone)
+   * - use_defaults
+     - bool
+     - Whether to include built-in patterns (EMAIL, PHONE, SSN, CREDIT_CARD, IP_ADDRESS, API_KEY, JWT_TOKEN)

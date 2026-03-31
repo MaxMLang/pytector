@@ -150,6 +150,57 @@ Combine sanitization with detection for defence in depth:
    else:
        print(f"Safe input: {cleaned}")
 
+PII Detection
+-------------
+
+Scan text for personally identifiable information:
+
+.. code-block:: python
+
+   from pytector import PIIScanner
+
+   scanner = PIIScanner()
+
+   has_pii, entities = scanner.scan("Email john@acme.com, SSN 123-45-6789")
+   for ent in entities:
+       print(f"  [{ent['type']}] {ent['text']} (score={ent['score']:.2f})")
+
+   # Redact PII in-place
+   print(scanner.redact("Email john@acme.com, SSN 123-45-6789"))
+
+Toxicity Detection
+------------------
+
+Classify text as toxic or non-toxic:
+
+.. code-block:: python
+
+   from pytector import ToxicityDetector
+
+   detector = ToxicityDetector()
+
+   is_toxic, score = detector.detect("You are terrible")
+   print(f"Toxic: {is_toxic}, Score: {score:.2f}")
+
+   detector.report("Have a wonderful day!")
+
+Regex Scanner
+-------------
+
+Fast, customizable rule-based scanning — no model needed:
+
+.. code-block:: python
+
+   from pytector import RegexScanner
+
+   scanner = RegexScanner()
+
+   has_match, matches = scanner.scan("Key: sk-live-abc123def456")
+   print(scanner.redact("Email user@example.com"))
+
+   # Add custom patterns
+   scanner.add_pattern("ORDER_ID", r"ORD-\d{8}")
+
 Security Considerations
 ---------------------
 

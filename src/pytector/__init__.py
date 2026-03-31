@@ -1,9 +1,18 @@
 from .detector import PromptInjectionDetector
+from .pii import PIIScanner
+from .regex_scanner import RegexScanner
 from .sanitizer import PromptSanitizer
+from .toxicity import ToxicityDetector
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
-__all__ = ["PromptInjectionDetector", "PromptSanitizer"]
+__all__ = [
+    "PromptInjectionDetector",
+    "PromptSanitizer",
+    "PIIScanner",
+    "ToxicityDetector",
+    "RegexScanner",
+]
 
 
 def __getattr__(name):

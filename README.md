@@ -47,6 +47,9 @@ Pytector provides a defence-in-depth layer for prompt injection. Always combine 
 - **LangChain Guardrail Runnable**: Adds `PytectorGuard` for LCEL pipelines (`guard | prompt | llm`) so unsafe prompts can be blocked before model execution.
 - **Keyword-Based Blocking**: Provides restrictive keyword filtering for both input and output layers with customizable keyword lists for immediate security control.
 - **Input Sanitization**: Cleans user input through a six-strategy pipeline — encoding detection (Base64/hex/ROT13), unicode normalization, regex pattern removal, sentence-level heuristic scoring, fuzzy matching, and keyword stripping — with an optional prompt enforcement layer for template escaping. Zero additional dependencies.
+- **PII Detection**: Scans text for personally identifiable information using the [PasteProof PII Detector](https://huggingface.co/joneauxedgar/pasteproof-pii-detector-v2) (ModernBERT NER, F1 0.97) with 27 entity types covering financial, credential, healthcare, GDPR, identity, contact, and address data. Supports scan, redact, and report workflows.
+- **Toxicity Detection**: Classifies text as toxic or non-toxic using a multilingual [citizenlab DistilBERT](https://huggingface.co/citizenlab/distilbert-base-multilingual-cased-toxicity) model (F1 0.94, 10 languages). Returns a toxicity score mirroring the prompt injection detector API.
+- **Regex Scanner**: Rule-based pattern matching for PII and credentials (email, phone, SSN, credit card, IP, API keys, JWT) using pure Python stdlib. Fully customizable — add, remove, or replace patterns at construction or runtime.
 - **Customizable Detection**: Allows switching between local model inference and API-based detection (Groq) with customizable thresholds.
 - **Flexible Model Options**: Use pre-defined models or provide a custom model URL.
 - **Rapid Deployment**: Designed for quick integration into projects that need immediate security layers beyond foundation model defaults.
@@ -132,7 +135,7 @@ To use Pytector, import the `PromptInjectionDetector` class and create an instan
 ## Notebook Demo
 
 An end-to-end Jupyter notebook is available at `notebooks/pytector_demo.ipynb`.  
-It covers local inference, keyword blocking, Groq integration with `openai/gpt-oss-safeguard-20b`, both Prompt Guard 2 models (`meta-llama/llama-prompt-guard-2-22m` and `meta-llama/llama-prompt-guard-2-86m`), LangChain LCEL guardrail usage, and input sanitization with `PromptSanitizer`.
+It covers local inference, keyword blocking, Groq integration with `openai/gpt-oss-safeguard-20b`, both Prompt Guard 2 models (`meta-llama/llama-prompt-guard-2-22m` and `meta-llama/llama-prompt-guard-2-86m`), LangChain LCEL guardrail usage, input sanitization with `PromptSanitizer`, PII detection with `PIIScanner`, toxicity detection with `ToxicityDetector`, and regex-based scanning with `RegexScanner`.
 
 ### Groq Migration Note (March 5, 2026)
 `meta-llama/llama-guard-4-12b` was deprecated in favor of `openai/gpt-oss-safeguard-20b`.
@@ -393,6 +396,83 @@ print(cleaned)  # template syntax escaped, injection sentences removed
 sanitizer.add_keywords(["new_threat"])
 sanitizer.remove_keywords("evil")
 print(sanitizer.get_keywords())
+```
+
+### Example 10: PII Detection
+Scan text for personally identifiable information using a transformer NER model:
+
+```python
+from pytector import PIIScanner
+
+scanner = PIIScanner()  # defaults to pasteproof-v3
+
+# Scan returns (has_pii, entities) — same tuple style as check_input_keywords()
+has_pii, entities = scanner.scan("Contact john@acme.com, SSN 123-45-6789")
+for ent in entities:
+    print(f"  [{ent['type']}] {ent['text']} (score={ent['score']:.2f})")
+
+# Redact PII in-place
+redacted = scanner.redact("Contact john@acme.com, SSN 123-45-6789")
+print(redacted)  # "Contact [REDACTED], SSN [REDACTED]"
+
+# Human-readable report
+scanner.report("Contact john@acme.com, SSN 123-45-6789")
+
+# Filter to specific entity types
+scanner = PIIScanner(entity_types=["EMAIL", "CREDIT_CARD"])
+has_pii, entities = scanner.scan("Email: a@b.com, SSN: 123-45-6789")
+# Only EMAIL entities returned; SSN is ignored
+```
+
+### Example 11: Toxicity Detection
+Classify text as toxic or non-toxic:
+
+```python
+from pytector import ToxicityDetector
+
+detector = ToxicityDetector()  # defaults to citizenlab multilingual model
+
+# Returns (is_toxic, score) — same shape as detect_injection()
+is_toxic, score = detector.detect("You are terrible and worthless")
+print(f"Toxic: {is_toxic}, Score: {score:.2f}")
+
+# Adjust threshold per call
+is_toxic, score = detector.detect("You are terrible", threshold=0.8)
+
+# Human-readable report
+detector.report("Have a wonderful day!")
+```
+
+### Example 12: Regex Scanner (Customizable)
+Fast, rule-based pattern matching with no model downloads:
+
+```python
+from pytector import RegexScanner
+
+# Ships with defaults: EMAIL, PHONE, SSN, CREDIT_CARD, IP_ADDRESS, API_KEY, JWT_TOKEN
+scanner = RegexScanner()
+
+has_match, matches = scanner.scan("Key: sk-live-abc123def456, IP: 10.0.0.1")
+for m in matches:
+    print(f"  [{m['pattern_name']}] {m['match']}")
+
+# Redact all matches
+print(scanner.redact("Email me at user@example.com"))
+# "Email me at [REDACTED]"
+
+# Add your own patterns
+scanner.add_pattern("AWS_ACCESS_KEY", r"AKIA[0-9A-Z]{16}")
+scanner.add_pattern("INTERNAL_ID", r"INT-\d{6}")
+
+# Remove a default pattern
+scanner.remove_pattern("JWT_TOKEN")
+
+# Use only custom patterns (no defaults)
+custom = RegexScanner(
+    patterns={"ORDER_ID": r"ORD-\d{8}", "ZIP": r"\b\d{5}(?:-\d{4})?\b"},
+    use_defaults=False,
+)
+print(custom.get_patterns())  # {'ORDER_ID': ..., 'ZIP': ...}
 ```
 
 
