@@ -201,6 +201,24 @@ Fast, customizable rule-based scanning — no model needed:
    # Add custom patterns
    scanner.add_pattern("ORDER_ID", r"ORD-\d{8}")
 
+Canary Tokens
+-------------
+
+Detect system prompt leaks — no ML needed:
+
+.. code-block:: python
+
+   from pytector import CanaryToken
+
+   canary = CanaryToken()
+   system_prompt = canary.wrap("You are a helpful assistant.")
+   # Pass system_prompt to your LLM...
+
+   # Then check the output
+   leaked, token = canary.check(model_output)
+   if leaked:
+       print("System prompt leaked!")
+
 Security Considerations
 ---------------------
 

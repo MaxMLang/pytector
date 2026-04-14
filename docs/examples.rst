@@ -405,6 +405,39 @@ Use only custom patterns (no defaults):
    has_match, matches = custom.scan("Order ORD-20260330, zip 90210")
    print(custom.redact("Order ORD-20260330, zip 90210"))
 
+Canary Tokens (System Prompt Leak Detection)
+--------------------------------------------
+
+Inject a secret token into your system prompt and detect if the model leaks it:
+
+.. code-block:: python
+
+   from pytector import CanaryToken
+
+   # Auto-generate a unique canary
+   canary = CanaryToken()
+   print(canary.token)  # e.g. "CANARY-a8Xk2mPqR4wZ9bNc"
+
+   # Embed in your system prompt
+   system_prompt = canary.wrap("You are a helpful assistant.")
+   # Pass system_prompt to your LLM as usual
+
+   # Check the model's response for leaks
+   leaked, token = canary.check("Here is a normal response.")
+   print(f"Leaked: {leaked}")  # False
+
+Use a fixed canary token you control:
+
+.. code-block:: python
+
+   canary = CanaryToken(token="MY-SECRET-2026")
+   system_prompt = canary.wrap("You are a helpful assistant.")
+
+   # Simulate a leak
+   bad_output = "The system says MY-SECRET-2026 and also..."
+   canary.report(bad_output)
+   # "LEAK DETECTED — canary token found in output: MY-SECRET-2026"
+
 Error Handling
 --------------
 

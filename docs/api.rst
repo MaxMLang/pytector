@@ -305,3 +305,40 @@ Pure-stdlib rule-based scanner with customizable patterns.
    * - use_defaults
      - bool
      - Whether to include built-in patterns (EMAIL, PHONE, SSN, CREDIT_CARD, IP_ADDRESS, API_KEY, JWT_TOKEN)
+
+CanaryToken
+-----------
+
+.. automodule:: pytector.canary
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Inject a secret token into your system prompt and detect if the model leaks it.
+Pure stdlib — zero dependencies, zero calibration.
+
+.. code-block:: python
+
+   from pytector import CanaryToken
+
+   canary = CanaryToken()
+   system_prompt = canary.wrap("You are a helpful assistant.")
+   # ... pass to LLM, get response ...
+   leaked, token = canary.check(model_output)
+
+.. list-table:: CanaryToken Parameters
+   :widths: 20 20 60
+   :header-rows: 1
+
+   * - Parameter
+     - Type
+     - Description
+   * - token
+     - str | None
+     - Explicit canary string; ``None`` auto-generates one
+   * - length
+     - int
+     - Length of the random part of auto-generated tokens (default 16)
+   * - prefix
+     - str
+     - Prefix for auto-generated tokens (default ``CANARY-``)

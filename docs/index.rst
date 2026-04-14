@@ -24,6 +24,7 @@ Features
 * **PII Detection**: NER-based PII scanning using PasteProof PII Detector (ModernBERT, F1 0.97) covering 27 entity types — financial, credential, healthcare, GDPR, identity, contact, and address data
 * **Toxicity Detection**: Multilingual toxicity classification using citizenlab DistilBERT (F1 0.94, 10 languages)
 * **Regex Scanner**: Customizable rule-based pattern matching for PII and credentials (email, phone, SSN, credit card, IP, API keys, JWT) using pure Python stdlib
+* **Canary Tokens**: System prompt leak detection — inject a secret token and verify the model never repeats it. Zero dependencies, zero calibration
 * **Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
 * **Rapid Deployment**: Designed for quick integration into projects needing immediate security layers
 * **Configurable**: Customizable detection parameters, thresholds, and security policies
