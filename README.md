@@ -589,10 +589,10 @@ Using Pytector "as is" for internal or not-for-profit projects is absolutely fin
 
 This project is licensed under the Apache 2.0 License since v0.2.0 and previously was licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-> **⚠️ Licensing Notice Regarding Underlying Models**
+> **Licensing Notice Regarding Underlying Models**
 > The source code for `pytector` is open-source and licensed under the Apache 2.0 License. However, this package utilizes external, third-party models (such as the PII detection model) which are subject to their own distinct licensing terms (e.g., BSL 1.0).
 >
-> Please be aware that while the wrapper code is open-source, the models themselves may restrict commercial use. Users are responsible for reviewing and complying with the specific licenses of any underlying models used within this package.
+> Please be aware that while the package code is open-source, the models themselves may restrict commercial use. Users are responsible for reviewing and complying with the specific licenses of any underlying models used within this package.
 
 ---
 
