@@ -50,6 +50,7 @@ Pytector provides a defence-in-depth layer for prompt injection. Always combine 
 - **PII Detection**: Scans text for personally identifiable information using the [PasteProof PII Detector](https://huggingface.co/joneauxedgar/pasteproof-pii-detector-v2) (ModernBERT NER, F1 0.97) with 27 entity types covering financial, credential, healthcare, GDPR, identity, contact, and address data. Supports scan, redact, and report workflows.
 - **Toxicity Detection**: Classifies text as toxic or non-toxic using a multilingual [citizenlab DistilBERT](https://huggingface.co/citizenlab/distilbert-base-multilingual-cased-toxicity) model (F1 0.94, 10 languages). Returns a toxicity score mirroring the prompt injection detector API.
 - **Regex Scanner**: Rule-based pattern matching for PII and credentials (email, phone, SSN, credit card, IP, API keys, JWT) using pure Python stdlib. Fully customizable — add, remove, or replace patterns at construction or runtime.
+- **Canary Tokens**: Inject a unique secret token into your system prompt and detect if the model leaks it. Catches system prompt exfiltration attacks regardless of injection technique. Zero dependencies, zero calibration.
 - **Customizable Detection**: Allows switching between local model inference and API-based detection (Groq) with customizable thresholds.
 - **Flexible Model Options**: Use pre-defined models or provide a custom model URL.
 - **Rapid Deployment**: Designed for quick integration into projects that need immediate security layers beyond foundation model defaults.
@@ -475,6 +476,33 @@ custom = RegexScanner(
 print(custom.get_patterns())  # {'ORDER_ID': ..., 'ZIP': ...}
 ```
 
+### Example 13: Canary Tokens (System Prompt Leak Detection)
+Detect if a model leaks your system prompt — no ML, no calibration:
+
+```python
+from pytector import CanaryToken
+
+# Generate a unique canary
+canary = CanaryToken()
+print(canary.token)  # e.g. "CANARY-a8Xk2mPqR4wZ9bNc"
+
+# Embed it in your system prompt
+system_prompt = canary.wrap("You are a helpful assistant. Answer questions concisely.")
+# Passes system_prompt to your LLM as usual
+
+# After getting the model's response, check for leaks
+model_output = "Here is the answer to your question..."
+leaked, token = canary.check(model_output)
+if leaked:
+    print(f"ALERT: System prompt leaked! Canary '{token}' found in output.")
+else:
+    print("Clean — no leak detected.")
+
+# Or use a fixed canary you control
+canary = CanaryToken(token="MY-SECRET-CANARY-2026")
+canary.report(model_output)
+```
+
 
 
 ## Security Best Practices
@@ -560,6 +588,11 @@ Using Pytector "as is" for internal or not-for-profit projects is absolutely fin
 ## License
 
 This project is licensed under the Apache 2.0 License since v0.2.0 and previously was licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+> **⚠️ Licensing Notice Regarding Underlying Models**
+> The source code for `pytector` is open-source and licensed under the Apache 2.0 License. However, this package utilizes external, third-party models (such as the PII detection model) which are subject to their own distinct licensing terms (e.g., BSL 1.0).
+>
+> Please be aware that while the wrapper code is open-source, the models themselves may restrict commercial use. Users are responsible for reviewing and complying with the specific licenses of any underlying models used within this package.
 
 ---
 
