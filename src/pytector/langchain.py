@@ -13,9 +13,15 @@ from pydantic import Field, PrivateAttr
 
 from .detector import PromptInjectionDetector
 
+# Re-exported from the core package so raising works without the LangChain
+# extra installed. Kept importable here for backward compatibility.
+from .guard import PromptInjectionBlockedError, ToolOutputGuard
 
-class PromptInjectionBlockedError(ValueError):
-    """Raised when a prompt is blocked by the guard."""
+__all__ = [
+    "PytectorGuard",
+    "PytectorToolGuard",
+    "PromptInjectionBlockedError",
+]
 
 
 class PytectorGuard(RunnableSerializable[str, str]):
@@ -87,3 +93,66 @@ class PytectorGuard(RunnableSerializable[str, str]):
             )
 
         return input
+
+
+class PytectorToolGuard(RunnableSerializable[Any, Any]):
+    """
+    LangChain Runnable that screens tool/web output before it re-enters the model.
+
+    Place after a tool call, e.g. ``tool | tool_guard | prompt | llm``.
+    Safe results pass through (possibly redacted); blocked results raise
+    ``PromptInjectionBlockedError`` or return ``fallback_message``.
+    """
+
+    tool_name: str = "tool"
+    model_name_or_url: str = "deberta"
+    threshold: float = 0.5
+    use_groq: bool = False
+    api_key: Optional[str] = None
+    groq_model: str = "openai/gpt-oss-safeguard-20b"
+    on_detection: str = "block"
+    fallback_message: Optional[str] = None
+    block_on_api_error: bool = True
+    detector_kwargs: dict[str, Any] = Field(default_factory=dict)
+
+    _guard: Optional[ToolOutputGuard] = PrivateAttr(default=None)
+
+    def _get_guard(self) -> ToolOutputGuard:
+        if self._guard is None:
+            self._guard = ToolOutputGuard(
+                model_name_or_url=self.model_name_or_url,
+                threshold=self.threshold,
+                use_groq=self.use_groq,
+                api_key=self.api_key,
+                groq_model=self.groq_model,
+                detector_kwargs=self.detector_kwargs,
+                on_detection=self.on_detection,
+                raise_on_block=False,
+                block_on_api_error=self.block_on_api_error,
+            )
+        return self._guard
+
+    def _block(self, message: str) -> str:
+        if self.fallback_message is not None:
+            return self.fallback_message
+        raise PromptInjectionBlockedError(message)
+
+    def invoke(
+        self,
+        input: Any,
+        config: Optional[RunnableConfig] = None,
+        **kwargs: Any,
+    ) -> Any:
+        del config, kwargs
+
+        guard = self._get_guard()
+        decision = guard.scan_tool_result(self.tool_name, input)
+
+        if decision.blocked:
+            detail = "; ".join(decision.reasons) or "prompt injection detected"
+            return self._block(
+                f"Security alert: blocked untrusted tool output "
+                f"from {self.tool_name!r}. {detail}"
+            )
+
+        return decision.content if decision.content is not None else input

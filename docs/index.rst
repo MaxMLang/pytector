@@ -25,10 +25,13 @@ Features
 * **Toxicity Detection**: Multilingual toxicity classification using citizenlab DistilBERT (F1 0.94, 10 languages)
 * **Regex Scanner**: Customizable rule-based pattern matching for PII and credentials (email, phone, SSN, credit card, IP, API keys, JWT) using pure Python stdlib
 * **Canary Tokens**: System prompt leak detection — inject a secret token and verify the model never repeats it. Zero dependencies, zero calibration
+* **Tool Output Guard**: Framework-agnostic screening of tool/web content for indirect prompt injection (``ToolOutputGuard`` / ``GuardDecision``)
+* **Web Page Scanner**: Fetch a URL, extract visible text, chunk long pages, and screen them (stdlib only)
+* **Security Pipeline**: Compose regex → sanitize → injection → optional PII/toxicity into one decision
 * **Multiple Model Backends**: Support for Hugging Face Transformers and GGUF models
 * **Rapid Deployment**: Designed for quick integration into projects needing immediate security layers
 * **Configurable**: Customizable detection parameters, thresholds, and security policies
-* **LangChain Integration**: LCEL-compatible guardrail runnable for pre-model prompt checks
+* **LangChain Integration**: LCEL guardrails for user input (``PytectorGuard``) and tool output (``PytectorToolGuard``)
 
 Quick Start
 ----------
